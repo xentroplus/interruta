@@ -1,25 +1,16 @@
-# InterRuta v1.1
+# InterRuta v1.2
 
-Mini app PWA para recorridos interurbanos de Técnica Sucursal.
+Mini app PWA para el registro y generación de informes de recorridos preventivos en rutas interurbanas de fibra óptica.
 
-## Alcance de esta primera entrega
-- Pantalla de inicio.
-- Creación de recorrido.
-- Catálogo real de cuadrillas y personal.
-- Catálogo real de rutas y nodos.
-- Responsable + colaborador 1 obligatorio + colaborador 2 opcional.
-- Selección cruzada entre cuadrillas con advertencia no bloqueante.
-- Prevención de personas duplicadas en roles.
+## Incluye en esta versión
+- Inicio y creación de recorrido.
+- Catálogo de cuadrillas, personal, rutas y nodos.
 - Persistencia local del recorrido abierto.
-- Inicio / Continuar recorrido.
-- Base PWA instalable y offline.
-
-## Publicación en GitHub Pages
-Repositorio recomendado: `interruta`.
-Subir todos los archivos de esta carpeta a la raíz del repositorio y activar GitHub Pages desde la rama `main`.
-
-
-## Cambios v1.1
-- Botón Limpiar datos antes de iniciar el recorrido.
-- Botón Restablecer recorrido con confirmación cuando existe un recorrido abierto.
-- Inicio permanece como navegación y no borra datos.
+- Panel visual del recorrido con tarjetas de avance.
+- Registro de nodos en cualquier orden.
+- Fotografía exterior obligatoria mediante cámara del dispositivo.
+- Compresión local de fotografías.
+- Captura interna de fecha, hora y GPS al guardar cada nodo.
+- Pausa y reanudación del recorrido.
+- Restablecimiento manual del recorrido durante pruebas.
+- Preparación para el módulo de 20 novedades.
