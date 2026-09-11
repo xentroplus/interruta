@@ -1,4 +1,4 @@
-# InterRuta v1.2
+# InterRuta v1.3
 
 Mini app PWA para el registro y generación de informes de recorridos preventivos en rutas interurbanas de fibra óptica.
 
@@ -14,3 +14,8 @@ Mini app PWA para el registro y generación de informes de recorridos preventivo
 - Pausa y reanudación del recorrido.
 - Restablecimiento manual del recorrido durante pruebas.
 - Preparación para el módulo de 20 novedades.
+
+
+## v1.3
+- Captura de fotografías exclusivamente mediante cámara en vivo con getUserMedia.
+- Se elimina el selector de archivos/galería para evidencias de nodos.
