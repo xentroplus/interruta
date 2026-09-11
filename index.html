@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#064b7d">
+  <meta name="description" content="InterRuta - Recorridos Interurbanos de Técnica Sucursal">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>InterRuta | Recorridos Interurbanos</title>
+  <style>
+    :root{--blue:#064b7d;--blue2:#0878b8;--cyan:#00a8cc;--bg:#f3f7fa;--card:#fff;--text:#173042;--muted:#637787;--line:#d9e5ec;--ok:#197a55;--warn:#a96b00;--danger:#b53939;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    button,input,select{font:inherit}
+    .app{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:88px}
+    .top{background:linear-gradient(135deg,var(--blue),#043a63 60%,#062f50);color:white;padding:20px 18px 22px;border-radius:0 0 26px 26px;box-shadow:0 6px 20px rgba(0,54,91,.18)}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .telco{font-weight:900;letter-spacing:.08em;font-size:15px} .latam{font-size:10px;opacity:.82;letter-spacing:.22em}
+    .ver{font-size:12px;background:rgba(255,255,255,.14);padding:6px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.22)}
+    h1{font-size:32px;line-height:1;margin:24px 0 6px} .sub{margin:0;opacity:.88;font-size:15px}
+    .content{padding:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 5px 18px rgba(31,73,99,.06);margin-bottom:14px}
+    .hero{padding:22px} .hero h2{margin:0 0 6px;font-size:20px} .hero p{margin:0 0 18px;color:var(--muted);line-height:1.45}
+    .btn{width:100%;min-height:50px;border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer}
+    .primary{background:linear-gradient(135deg,var(--blue2),var(--cyan));color:white} .secondary{background:#edf5f9;color:var(--blue);border:1px solid #cfe1ea} .ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .section-title{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:800;margin:2px 0 12px}
+    .field{margin-bottom:15px} label{display:block;font-size:13px;font-weight:800;margin:0 0 7px} select{width:100%;min-height:48px;border:1px solid #cbdce6;border-radius:12px;background:white;padding:0 12px;color:var(--text);font-size:16px}
+    select:focus,button:focus{outline:3px solid rgba(0,168,204,.20);outline-offset:2px}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}
+    .route-box{background:#f7fbfd;border:1px dashed #b7d3e2;border-radius:14px;padding:13px;margin-top:8px}
+    .route-box strong{display:block;margin-bottom:8px} .chips{display:flex;flex-wrap:wrap;gap:7px} .chip{font-size:12px;padding:6px 9px;background:#e7f4f8;color:#075d82;border-radius:999px;font-weight:700}
+    .alert{font-size:13px;border-radius:12px;padding:11px 12px;margin:10px 0 0;background:#fff8e8;color:#795400;border:1px solid #f1dfaf;display:none}
+    .footer{text-align:center;color:var(--muted);font-size:11px;padding:8px 18px 22px}
+    .status{display:flex;align-items:center;gap:10px;padding:12px 0 4px;color:var(--muted);font-size:13px} .dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px} .metric{background:#f5fafc;border:1px solid var(--line);padding:12px;border-radius:14px} .metric b{display:block;font-size:18px;color:var(--blue)} .metric span{font-size:11px;color:var(--muted)}
+    .hidden{display:none!important}
+    .bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(760px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(243,247,250,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
+    @media(max-width:480px){.row,.summary-grid{grid-template-columns:1fr} h1{font-size:29px} .top{border-radius:0 0 22px 22px}}
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.0</div></div>
+    <h1>InterRuta</h1><p class="sub">Recorridos Interurbanos · Técnica Sucursal</p>
+  </header>
+  <main class="content">
+    <section id="homeScreen">
+      <div class="card hero">
+        <h2>Control de recorridos en campo</h2>
+        <p>Inicia un recorrido preventivo, selecciona la cuadrilla y carga automáticamente los nodos de la ruta.</p>
+        <button class="btn primary" id="newBtn" type="button">＋ Nuevo recorrido</button>
+        <button class="btn primary hidden" id="continueBtn" type="button">▶ Continuar recorrido</button>
+        <div class="status"><span class="dot"></span><span>Aplicación lista para trabajo local</span></div>
+      </div>
+      <div class="card"><div class="section-title">Reglas del recorrido</div>
+        <div class="hint">• Un recorrido pendiente debe finalizarse antes de iniciar otro.<br>• La ruta puede recorrerse en cualquier sentido.<br>• Los nodos se cargan desde el catálogo oficial.</div>
+      </div>
+    </section>
+
+    <section id="setupScreen" class="hidden">
+      <div class="card">
+        <div class="section-title">Datos del recorrido</div>
+        <div class="field"><label for="crew">Código de cuadrilla</label><select id="crew"><option value="">Seleccione...</option></select></div>
+        <div class="field"><label for="responsible">Responsable</label><select id="responsible" disabled><option value="">Seleccione primero la cuadrilla...</option></select><div class="hint">Se priorizan integrantes de la cuadrilla seleccionada.</div></div>
+        <div class="field"><label for="collab1">Colaborador 1</label><select id="collab1" disabled><option value="">Seleccione primero la cuadrilla...</option></select></div>
+        <div class="field"><label for="collab2">Colaborador 2 <span style="font-weight:500;color:var(--muted)">(opcional)</span></label><select id="collab2" disabled><option value="">Sin colaborador adicional</option></select></div>
+        <div id="crossWarning" class="alert">⚠ Uno de los colaboradores pertenece a otra cuadrilla. Se permite continuar.</div>
+        <div class="field" style="margin-top:16px"><label for="route">Ruta</label><select id="route"><option value="">Seleccione...</option></select></div>
+        <div id="routeBox" class="route-box hidden"><strong id="routeName"></strong><div class="chips" id="nodeChips"></div><div class="hint" style="margin-top:9px">No se impone sentido A→B. Todos los nodos deberán registrarse antes de finalizar.</div></div>
+      </div>
+      <div class="card"><div class="section-title">Validación</div><div id="validation" class="hint">Completa los campos obligatorios para habilitar el inicio del recorrido.</div></div>
+    </section>
+
+    <section id="activeScreen" class="hidden">
+      <div class="card hero"><div class="section-title">Recorrido abierto</div><h2 id="activeRoute">—</h2><p id="activeCrew">—</p>
+        <div class="summary-grid"><div class="metric"><b>0 / 20</b><span>Novedades</span></div><div class="metric"><b id="nodeMetric">0 / 0</b><span>Nodos</span></div></div>
+      </div>
+      <div class="card"><div class="section-title">Siguiente módulo</div><p class="hint" style="margin:0">La estructura ya está preparada para incorporar las tarjetas <b>Registrar nodo</b> y <b>Registrar novedad</b> en la siguiente iteración.</p></div>
+    </section>
+  </main>
+  <div class="bottom" id="setupActions" style="display:none"><div class="row"><button class="btn ghost" id="homeBtn" type="button">⌂ Inicio</button><button class="btn primary" id="startBtn" type="button" disabled>Iniciar recorrido</button></div></div>
+  <div class="bottom" id="activeActions" style="display:none"><button class="btn secondary" id="activeHomeBtn" type="button">⌂ Ir al inicio</button></div>
+  <div class="footer">InterRuta · Técnica Sucursal · v1.0</div>
+</div>
+<script>
+const DATA={"crews": [{"code": "IBA PROV IBA INT 01", "members": ["PALACIOS CRIOLLO JOSE LUIS", "CEVALLOS LOPEZ JOSE EDUARDO", "LOPEZ ORBES SANTIAGO MIGUEL"]}, {"code": "IBA PROV IBA INT 02", "members": ["PILCO CASTELLANO BRAYAN RAUL", "OCLES AREVALO FERNANDO ISMAEL"]}, {"code": "IBA PROV CAY INT 01", "members": ["TITO INLAGO SEGUNDO WIDINSON", "HUERTAS DELGADO DARIO JAVIER"]}, {"code": "IBA PROV SGA INT 01", "members": ["ERAZO MONTENEGRO ANGEL VINICIO", "VELASCO PILACUAN CRISTHOFER DAVID", "CEVALLOS GUERRERO DARWIN VLADIMIR"]}], "routes": [{"name": "Ibarra SDH - Cotama SDH", "gis": "IBA-Ibarra SDH (O)/Cotama SDH (A)-F01-BB", "nodes": ["Ibarra SDH", "Atuntaqui", "Cotacachi", "Cotama SDH"]}, {"name": "Cotama SDH - Tabacundo", "gis": "IBA-Cotama SDH (A)/Tabacundo SDH (O) - F01-BB", "nodes": ["Cotama SDH", "Tabacundo"]}, {"name": "Ibarra SDH - Urcuqui", "gis": "IBA-Ibarra SDH (O)/Urcuqui (E)-F02-BB", "nodes": ["Ibarra SDH", "Urcuqui"]}, {"name": "Urcuqui - Lita SDH", "gis": "IBA-Urcuqui (E)/Lita SDH (O)-F01-BB", "nodes": ["Urcuqui", "Lita SDH"]}, {"name": "Cotama SDH -San José de Minas", "gis": "OTA-Cotama SDH (A)/San Jose de Minas (E) - F01-BB", "nodes": ["Cotama SDH", "San José de Minas"]}, {"name": "Apuela – Pacto", "gis": "IBA-Pacto (E)/Apuela (E)-F01-BB (En Construcción)", "nodes": ["Apuela", "Pacto"]}, {"name": "Ibarra SDH - Cayambe SDH", "gis": "IBA-Ibarra SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Ibarra SDH", "Cayambe SDH"]}, {"name": "Cayambe - Pifo", "gis": "CAY-Pifo (E)/Cayambe SDH (O)-F01-BB", "nodes": ["Cayambe", "Pifo"]}, {"name": "Tabacundo - Malchingui", "gis": "MLGI-Malchingui (E)/Data Center uio (A)-Tabacundo SDH (O)-F01-BB", "nodes": ["Tabacundo", "Malchingui"]}, {"name": "Malchingui - Guayllabamba", "gis": "MLGI-Malchingui (E)/San Jose de Minas (E)-Guayllabamba (E)-F01-BB", "nodes": ["Malchingui", "Guayllabamba"]}, {"name": "Tabacundo - Cayambe", "gis": "TAB-Tabacundo SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Tabacundo", "Cayambe"]}, {"name": "Guayllabamba-San Jose de Minas", "gis": "GBB-San Jose de Minas (E)/Guayllabamba (E)-F01-BB", "nodes": ["Guayllabamba", "Perucho", "San Jose de Minas"]}, {"name": "Quinche - Guayllabamba", "gis": "UIO-Quinche (E)/Guayllabamba (E)-F01-BB", "nodes": ["Quinche", "Guayllabamba"]}, {"name": "Cuzubamba - Pifo", "gis": "UIO-Pifo (E)/Cuzubamba-F01-BB", "nodes": ["Cuzubamba", "Pifo"]}, {"name": "Bolivar SDH - Ibarra SDH F02", "gis": "BOL-Bolivar SDH (O)-Ibarra SDH (O)/Tulcan SDH (O)/F2-D01-DB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F02", "gis": "IBA-El Angel (O)/Ibarra SDH (O)-F02-BB", "nodes": ["El Angel SDH", "Ibarra SDH"]}, {"name": "San Gabriel SDH - Ibarra SDH F02", "gis": "IBA-Ibarra SDH (O)/San Gabriel (E)-Tulcan SDH (O)-F01-BB", "nodes": ["San Gabriel SDH", "Ibarra SDH"]}, {"name": "Bolivar SDH - Ibarra SDH F01", "gis": "IBA-Bolivar SDH (O)/Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F01", "gis": "IBA-Ibarra SDH (O)/El Angel (O)-F01-BB", "nodes": ["El Angel SDH", "Mira", "Ibarra SDH"]}, {"name": "Tulcan SDH - Bolivar SDH F01", "gis": "TUL-Tulcan SDH (O)/Bolivar SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Julio Andrade - Santa Barbara", "gis": "JULA-Julio Andrade (E)/Santa Barbara (E)-F01-BB", "nodes": ["Julio Andrade", "Santa Barbara"]}, {"name": "Sta. Barbara - La Bonita", "gis": "LBNT-Santa Barbara (E)/La Bonita (E)-F01-BB", "nodes": ["Sta. Barbara", "La Bonita"]}, {"name": "Tulcan SDH - El Angel SDH F01", "gis": "IBA-El Angel (O)/Tulcan SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - El Angel SDH F02", "gis": "TUL-Tulcan SDH (O)/El Angel (O)-F02-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - Bolivar SDH  F02", "gis": "IBA-Bolivar SDH (O)/Tulcan SDH (O)-Ibarra SDH (O)-F02-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Tulcan- Rumichaca Principal", "gis": "TUL-Tulcan SDH (O)/N/A-F01-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Tulcan-Rumichaca Backup", "gis": "TUL-Tulcan SDH (O)/N/A-F02-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Bolivar - Pimapiro", "gis": "IBA-Pimampiro (E)/Tulcan SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar", "Pimapiro"]}, {"name": "Pimampiro - Ibarra", "gis": "IBA-Pimampiro (E)/Bolivar SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Pimampiro", "Ibarra"]}]};
+const $=s=>document.querySelector(s);
+const allPeople=DATA.crews.flatMap(c=>c.members.map(name=>({name,crew:c.code})));
+const state={draft:{},active:null};
+
+function saveActive(v){state.active=v;localStorage.setItem('interruta.active',JSON.stringify(v));refreshHome();}
+function loadActive(){try{state.active=JSON.parse(localStorage.getItem('interruta.active')||'null')}catch(e){state.active=null} refreshHome();}
+function show(screen){['#homeScreen','#setupScreen','#activeScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
+function refreshHome(){$('#newBtn').classList.toggle('hidden',!!state.active);$('#continueBtn').classList.toggle('hidden',!state.active)}
+
+DATA.crews.forEach(c=>$('#crew').add(new Option(c.code,c.code)));
+DATA.routes.forEach((r,i)=>$('#route').add(new Option(r.name,String(i))));
+
+function populatePeople(){
+ const crew=$('#crew').value;
+ const preferred=allPeople.filter(p=>p.crew===crew), others=allPeople.filter(p=>p.crew!==crew);
+ [['#responsible','Seleccione...'],['#collab1','Seleccione...'],['#collab2','Sin colaborador adicional']].forEach(([id,first])=>{
+   const el=$(id); el.innerHTML=''; el.add(new Option(first,''));
+   if(!crew){el.disabled=true;return} el.disabled=false;
+   if(preferred.length){const og=document.createElement('optgroup');og.label='Cuadrilla seleccionada';preferred.forEach(p=>og.appendChild(new Option(p.name,p.name)));el.appendChild(og)}
+   if(others.length){const og=document.createElement('optgroup');og.label='Otras cuadrillas';others.forEach(p=>og.appendChild(new Option(p.name,p.name)));el.appendChild(og)}
+ }); validate();
+}
+function selectedPersonCrew(name){const p=allPeople.find(x=>x.name===name);return p?p.crew:''}
+function validate(){
+ const crew=$('#crew').value,r=$('#responsible').value,c1=$('#collab1').value,c2=$('#collab2').value,route=$('#route').value;
+ const duplicate=(r&&c1&&r===c1)||(c2&&(c2===r||c2===c1));
+ const cross=[r,c1,c2].filter(Boolean).some(n=>selectedPersonCrew(n)!==crew);
+ $('#crossWarning').style.display=cross?'block':'none';
+ let msg=''; if(!crew||!r||!c1||route==='') msg='Completa cuadrilla, responsable, colaborador 1 y ruta.'; else if(duplicate) msg='Una persona no puede ocupar dos roles en el mismo recorrido.'; else msg='✓ Datos completos. El recorrido puede iniciarse.';
+ $('#validation').textContent=msg; $('#startBtn').disabled=!!(!crew||!r||!c1||route===''||duplicate);
+}
+function showRoute(){const v=$('#route').value;if(v===''){$('#routeBox').classList.add('hidden');validate();return};const r=DATA.routes[Number(v)];$('#routeName').textContent=r.name;$('#nodeChips').innerHTML=r.nodes.map(n=>`<span class="chip">${n}</span>`).join('');$('#routeBox').classList.remove('hidden');validate()}
+function openActive(){if(!state.active)return;$('#activeRoute').textContent=state.active.route.name;$('#activeCrew').textContent=`${state.active.crew} · Responsable: ${state.active.responsible}`;$('#nodeMetric').textContent=`0 / ${state.active.route.nodes.length}`;show('#activeScreen')}
+
+$('#newBtn').addEventListener('click',()=>show('#setupScreen'));
+$('#continueBtn').addEventListener('click',openActive);
+$('#homeBtn').addEventListener('click',()=>show('#homeScreen'));
+$('#activeHomeBtn').addEventListener('click',()=>show('#homeScreen'));
+$('#crew').addEventListener('change',populatePeople);
+['#responsible','#collab1','#collab2'].forEach(id=>$(id).addEventListener('change',validate));
+$('#route').addEventListener('change',showRoute);
+$('#startBtn').addEventListener('click',()=>{
+ if($('#startBtn').disabled)return;
+ const route=DATA.routes[Number($('#route').value)];
+ const active={startedAt:new Date().toISOString(),crew:$('#crew').value,responsible:$('#responsible').value,collab1:$('#collab1').value,collab2:$('#collab2').value||null,route};
+ saveActive(active);openActive();
+});
+
+loadActive();show('#homeScreen');
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
