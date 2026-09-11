@@ -45,6 +45,18 @@
     .progress{height:8px;border-radius:999px;background:#e8f0f4;overflow:hidden;margin-top:9px}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--cyan));width:0}
     .node-list{display:grid;gap:9px;margin-top:8px}.node-option{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fbfdfe}.node-option input{width:20px;height:20px}.node-option.done{background:#eef8f3;border-color:#bddfcd}.node-option.done label{color:var(--ok)}
     .photo-box{border:1px dashed #a9c7d7;border-radius:15px;padding:12px;background:#f7fbfd}.camera-view{width:100%;max-height:340px;object-fit:cover;border-radius:12px;background:#0f1720;margin-top:10px;display:none}.camera-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.photo-preview{width:100%;max-height:340px;object-fit:cover;border-radius:11px;margin-top:10px;display:none}.meta-box{font-size:12px;color:var(--muted);line-height:1.55;background:#f7fafc;border:1px solid var(--line);border-radius:12px;padding:11px;margin-top:10px}
+
+    textarea{width:100%;min-height:96px;border:1px solid #cbdce6;border-radius:12px;background:white;padding:12px;color:var(--text);font-size:16px;resize:vertical}
+    textarea:focus{outline:3px solid rgba(0,168,204,.20);outline-offset:2px}
+    .readonly-box{background:#f2f7fa;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;line-height:1.5;color:var(--text)}
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .choice-btn{min-height:48px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);font-weight:800;cursor:pointer}
+    .choice-btn.selected{border-color:var(--blue2);background:#eaf6fb;color:var(--blue)}
+    .novelty-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .counter-pill{font-size:12px;font-weight:900;color:var(--blue);background:#e7f4f8;border-radius:999px;padding:7px 10px}
+    .completed-list{display:grid;gap:8px;margin-top:8px}
+    .completed-item{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdfe;font-size:12px}
+    .completed-item b{color:var(--blue)}
     .paused-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;background:#fff5dc;color:#815600;border:1px solid #ecd899;margin-bottom:10px}
     .hidden{display:none!important}
     .bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(760px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(243,247,250,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
@@ -54,7 +66,7 @@
 <body>
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.2</div></div>
+    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.4</div></div>
     <h1>InterRuta</h1><p class="sub">Recorridos Interurbanos · Técnica Sucursal</p>
   </header>
   <main class="content">
@@ -92,7 +104,7 @@
       </div>
       <div class="action-grid">
         <button class="action-card" id="nodeCard" type="button"><span class="action-icon">📍</span><b>Registrar nodo</b><span id="nodeCardText">Registrar evidencia exterior de los nodos de la ruta.</span></button>
-        <button class="action-card" id="noveltyCard" type="button" disabled title="Se habilitará en la siguiente versión"><span class="action-icon">📝</span><b>Registrar novedad</b><span>Próximo módulo: registro guiado de las 20 novedades.</span></button>
+        <button class="action-card" id="noveltyCard" type="button"><span class="action-icon">📝</span><b>Registrar novedad</b><span id="noveltyCardText">Registrar la novedad 1 de 20.</span></button>
       </div>
       <div class="card"><div class="section-title">Estado del recorrido</div><div id="routeStatus" class="hint">Recorrido activo. Puedes registrar nodos en cualquier orden.</div></div>
     </section>
@@ -117,6 +129,80 @@
       </div>
       <div class="card"><div class="section-title">Nodos de esta ruta</div><div id="nodeChecklist" class="node-list"></div></div>
     </section>
+
+    <section id="noveltyScreen" class="hidden">
+      <div class="card">
+        <div class="novelty-head">
+          <div class="section-title" style="margin-bottom:0">Registro de novedad</div>
+          <div class="counter-pill" id="noveltyNumber">Novedad 1 de 20</div>
+        </div>
+        <div class="field" style="margin-top:16px">
+          <label for="noveltyMotive">Motivo aparente de la novedad</label>
+          <select id="noveltyMotive"><option value="">Seleccione...</option></select>
+        </div>
+        <div class="field">
+          <label>Remedio sugerido</label>
+          <div class="readonly-box" id="suggestedRemedy">Selecciona el motivo para mostrar la recomendación técnica estándar.</div>
+          <div class="hint">El texto estándar no se modifica. El técnico registra debajo lo ejecutado o encontrado.</div>
+        </div>
+        <div class="photo-box">
+          <label>Foto ANTES del mantenimiento</label>
+          <video id="beforeCamera" class="camera-view" autoplay playsinline muted aria-label="Vista de cámara para foto antes"></video>
+          <canvas id="beforeCanvas" class="hidden"></canvas>
+          <img id="beforePreview" class="photo-preview" alt="Vista previa de la foto antes">
+          <div class="camera-actions">
+            <button class="btn secondary" id="beforeOpenBtn" type="button">📷 Activar cámara</button>
+            <button class="btn primary" id="beforeTakeBtn" type="button" disabled>Tomar foto</button>
+          </div>
+          <button class="btn ghost hidden" id="beforeRetakeBtn" type="button" style="margin-top:10px">↺ Repetir foto</button>
+          <div class="hint" id="beforeHint" style="margin-top:8px">La evidencia debe capturarse en vivo desde la cámara.</div>
+        </div>
+        <div class="meta-box" id="noveltyMeta">Fecha/hora y GPS se capturarán automáticamente al completar la novedad.</div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label for="technicalDetail">Detalle técnico de la intervención / hallazgo</label>
+          <textarea id="technicalDetail" placeholder="Describe lo realizado o la condición encontrada..."></textarea>
+        </div>
+        <div class="field">
+          <label>¿La novedad fue solucionada durante el recorrido?</label>
+          <div class="choice-grid">
+            <button class="choice-btn" id="solvedYesBtn" type="button">Sí, solucionada</button>
+            <button class="choice-btn" id="solvedNoBtn" type="button">No, queda pendiente</button>
+          </div>
+        </div>
+
+        <div id="solvedArea" class="hidden">
+          <div class="photo-box">
+            <label>Foto DESPUÉS del mantenimiento</label>
+            <video id="afterCamera" class="camera-view" autoplay playsinline muted aria-label="Vista de cámara para foto después"></video>
+            <canvas id="afterCanvas" class="hidden"></canvas>
+            <img id="afterPreview" class="photo-preview" alt="Vista previa de la foto después">
+            <div class="camera-actions">
+              <button class="btn secondary" id="afterOpenBtn" type="button">📷 Activar cámara</button>
+              <button class="btn primary" id="afterTakeBtn" type="button" disabled>Tomar foto</button>
+            </div>
+            <button class="btn ghost hidden" id="afterRetakeBtn" type="button" style="margin-top:10px">↺ Repetir foto</button>
+            <div class="hint" id="afterHint" style="margin-top:8px">La evidencia posterior debe capturarse en vivo desde la cámara.</div>
+          </div>
+        </div>
+
+        <div id="pendingArea" class="hidden">
+          <div class="field">
+            <label for="pendingDetail">Tarea pendiente para escalar al coordinador</label>
+            <textarea id="pendingDetail" placeholder="Indica qué acción queda pendiente..."></textarea>
+            <div class="hint">No se solicita foto después. En el informe quedará el espacio posterior vacío.</div>
+          </div>
+        </div>
+        <div class="alert" id="noveltyValidation" style="display:block;background:#f7fbfd;color:var(--muted);border-color:var(--line)">Completa los datos obligatorios para guardar esta novedad.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Novedades completadas</div>
+        <div id="noveltyCompletedList" class="completed-list"><div class="hint">Aún no hay novedades registradas.</div></div>
+      </div>
+    </section>
   </main>
   <div class="bottom" id="setupActions" style="display:none">
     <div class="row"><button class="btn ghost" id="homeBtn" type="button">⌂ Inicio</button><button class="btn ghost" id="clearSetupBtn" type="button">↺ Limpiar datos</button></div>
@@ -129,21 +215,26 @@
   <div class="bottom" id="nodeActions" style="display:none">
     <div class="row"><button class="btn ghost" id="backActiveBtn" type="button">← Volver al recorrido</button><button class="btn primary" id="saveNodeBtn" type="button" disabled>Guardar nodo</button></div>
   </div>
-  <div class="footer">InterRuta · Técnica Sucursal · v1.3</div>
+  <div class="bottom" id="noveltyActions" style="display:none">
+    <div class="row"><button class="btn ghost" id="backFromNoveltyBtn" type="button">← Volver al recorrido</button><button class="btn primary" id="saveNoveltyBtn" type="button" disabled>Completar novedad</button></div>
+  </div>
+  <div class="footer">InterRuta · Técnica Sucursal · v1.4</div>
 </div>
 <script>
 const DATA={"crews": [{"code": "IBA PROV IBA INT 01", "members": ["PALACIOS CRIOLLO JOSE LUIS", "CEVALLOS LOPEZ JOSE EDUARDO", "LOPEZ ORBES SANTIAGO MIGUEL"]}, {"code": "IBA PROV IBA INT 02", "members": ["PILCO CASTELLANO BRAYAN RAUL", "OCLES AREVALO FERNANDO ISMAEL"]}, {"code": "IBA PROV CAY INT 01", "members": ["TITO INLAGO SEGUNDO WIDINSON", "HUERTAS DELGADO DARIO JAVIER"]}, {"code": "IBA PROV SGA INT 01", "members": ["ERAZO MONTENEGRO ANGEL VINICIO", "VELASCO PILACUAN CRISTHOFER DAVID", "CEVALLOS GUERRERO DARWIN VLADIMIR"]}], "routes": [{"name": "Ibarra SDH - Cotama SDH", "gis": "IBA-Ibarra SDH (O)/Cotama SDH (A)-F01-BB", "nodes": ["Ibarra SDH", "Atuntaqui", "Cotacachi", "Cotama SDH"]}, {"name": "Cotama SDH - Tabacundo", "gis": "IBA-Cotama SDH (A)/Tabacundo SDH (O) - F01-BB", "nodes": ["Cotama SDH", "Tabacundo"]}, {"name": "Ibarra SDH - Urcuqui", "gis": "IBA-Ibarra SDH (O)/Urcuqui (E)-F02-BB", "nodes": ["Ibarra SDH", "Urcuqui"]}, {"name": "Urcuqui - Lita SDH", "gis": "IBA-Urcuqui (E)/Lita SDH (O)-F01-BB", "nodes": ["Urcuqui", "Lita SDH"]}, {"name": "Cotama SDH -San José de Minas", "gis": "OTA-Cotama SDH (A)/San Jose de Minas (E) - F01-BB", "nodes": ["Cotama SDH", "San José de Minas"]}, {"name": "Apuela – Pacto", "gis": "IBA-Pacto (E)/Apuela (E)-F01-BB (En Construcción)", "nodes": ["Apuela", "Pacto"]}, {"name": "Ibarra SDH - Cayambe SDH", "gis": "IBA-Ibarra SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Ibarra SDH", "Cayambe SDH"]}, {"name": "Cayambe - Pifo", "gis": "CAY-Pifo (E)/Cayambe SDH (O)-F01-BB", "nodes": ["Cayambe", "Pifo"]}, {"name": "Tabacundo - Malchingui", "gis": "MLGI-Malchingui (E)/Data Center uio (A)-Tabacundo SDH (O)-F01-BB", "nodes": ["Tabacundo", "Malchingui"]}, {"name": "Malchingui - Guayllabamba", "gis": "MLGI-Malchingui (E)/San Jose de Minas (E)-Guayllabamba (E)-F01-BB", "nodes": ["Malchingui", "Guayllabamba"]}, {"name": "Tabacundo - Cayambe", "gis": "TAB-Tabacundo SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Tabacundo", "Cayambe"]}, {"name": "Guayllabamba-San Jose de Minas", "gis": "GBB-San Jose de Minas (E)/Guayllabamba (E)-F01-BB", "nodes": ["Guayllabamba", "Perucho", "San Jose de Minas"]}, {"name": "Quinche - Guayllabamba", "gis": "UIO-Quinche (E)/Guayllabamba (E)-F01-BB", "nodes": ["Quinche", "Guayllabamba"]}, {"name": "Cuzubamba - Pifo", "gis": "UIO-Pifo (E)/Cuzubamba-F01-BB", "nodes": ["Cuzubamba", "Pifo"]}, {"name": "Bolivar SDH - Ibarra SDH F02", "gis": "BOL-Bolivar SDH (O)-Ibarra SDH (O)/Tulcan SDH (O)/F2-D01-DB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F02", "gis": "IBA-El Angel (O)/Ibarra SDH (O)-F02-BB", "nodes": ["El Angel SDH", "Ibarra SDH"]}, {"name": "San Gabriel SDH - Ibarra SDH F02", "gis": "IBA-Ibarra SDH (O)/San Gabriel (E)-Tulcan SDH (O)-F01-BB", "nodes": ["San Gabriel SDH", "Ibarra SDH"]}, {"name": "Bolivar SDH - Ibarra SDH F01", "gis": "IBA-Bolivar SDH (O)/Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F01", "gis": "IBA-Ibarra SDH (O)/El Angel (O)-F01-BB", "nodes": ["El Angel SDH", "Mira", "Ibarra SDH"]}, {"name": "Tulcan SDH - Bolivar SDH F01", "gis": "TUL-Tulcan SDH (O)/Bolivar SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Julio Andrade - Santa Barbara", "gis": "JULA-Julio Andrade (E)/Santa Barbara (E)-F01-BB", "nodes": ["Julio Andrade", "Santa Barbara"]}, {"name": "Sta. Barbara - La Bonita", "gis": "LBNT-Santa Barbara (E)/La Bonita (E)-F01-BB", "nodes": ["Sta. Barbara", "La Bonita"]}, {"name": "Tulcan SDH - El Angel SDH F01", "gis": "IBA-El Angel (O)/Tulcan SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - El Angel SDH F02", "gis": "TUL-Tulcan SDH (O)/El Angel (O)-F02-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - Bolivar SDH  F02", "gis": "IBA-Bolivar SDH (O)/Tulcan SDH (O)-Ibarra SDH (O)-F02-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Tulcan- Rumichaca Principal", "gis": "TUL-Tulcan SDH (O)/N/A-F01-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Tulcan-Rumichaca Backup", "gis": "TUL-Tulcan SDH (O)/N/A-F02-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Bolivar - Pimapiro", "gis": "IBA-Pimampiro (E)/Tulcan SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar", "Pimapiro"]}, {"name": "Pimampiro - Ibarra", "gis": "IBA-Pimampiro (E)/Bolivar SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Pimampiro", "Ibarra"]}]};
+const NOVELTY_CATALOG=[{"motive": "Herrajes en Mal Estado.", "remedy": "Reemplazar o corregir los herrajes deteriorados y verificar su correcta fijación."}, {"motive": "Falta de Herrajes.", "remedy": "Instalar los herrajes faltantes de acuerdo con el estándar técnico aplicable."}, {"motive": "Postes en Mal Estado.", "remedy": "Evaluar la condición del poste y gestionar su reparación o reemplazo según corresponda."}, {"motive": "Poste(s) Cambiado(s).", "remedy": "Reubicar, ordenar y asegurar la infraestructura de fibra sobre el poste reemplazado, verificando su correcta instalación."}, {"motive": "Postes por Instalar.", "remedy": "Gestionar la instalación del poste requerido y posteriormente normalizar la infraestructura de fibra asociada."}, {"motive": "Poste nuevo instalado – TN.", "remedy": "Adecuar y asegurar la infraestructura de fibra al nuevo poste instalado por Telconet."}, {"motive": "Poste nuevo instalado – EMPRESAS ELÉCTRICAS.", "remedy": "Adecuar o migrar la infraestructura de fibra al nuevo poste de la empresa eléctrica, según corresponda."}, {"motive": "Postes Inclinados.", "remedy": "Evaluar la inclinación y gestionar el aplomado, reforzamiento o reemplazo del poste según su condición."}, {"motive": "Retenida(s) en mal estado.", "remedy": "Reparar o reemplazar la retenida deteriorada y verificar la estabilidad de la infraestructura."}, {"motive": "Retenida(s) cortadas.", "remedy": "Reponer la retenida y verificar tensión y estabilidad de la infraestructura asociada."}, {"motive": "Vanos por Retemplar.", "remedy": "Retemplar el vano hasta alcanzar las condiciones técnicas requeridas."}, {"motive": "Mangas Sueltas.", "remedy": "Fijar correctamente la manga y verificar sus elementos de sujeción."}, {"motive": "Mangas abiertas/dañadas.", "remedy": "Cerrar, reparar o reemplazar la manga según el nivel de afectación encontrado."}, {"motive": "Reservas Sueltas.", "remedy": "Ordenar y asegurar correctamente la reserva de fibra."}, {"motive": "Cruces de Vías Bajos.", "remedy": "Corregir altura y/o tensión del tendido para recuperar condiciones adecuadas de seguridad."}, {"motive": "Vegetación Sobre Fibra/Manga.", "remedy": "Realizar poda o retiro de vegetación que comprometa la fibra, manga o elementos asociados."}, {"motive": "Localización de Manga.", "remedy": "Identificar y documentar correctamente la ubicación de la manga."}, {"motive": "Documentación unifilar de hilos.", "remedy": "Verificar y actualizar la documentación correspondiente a la distribución de hilos."}, {"motive": "Línea Eléctrica en mal estado.", "remedy": "Documentar el riesgo y gestionar la novedad con el responsable de la infraestructura eléctrica."}, {"motive": "Regeneración urbana.", "remedy": "Evaluar afectación sobre la red y gestionar las adecuaciones o reubicaciones necesarias."}, {"motive": "Ampliación de vía.", "remedy": "Evaluar afectación proyectada sobre la red y gestionar preventivamente su adecuación o reubicación."}, {"motive": "Cable lastimado.", "remedy": "Evaluar el nivel de daño y reparar, proteger o gestionar el reemplazo del tramo afectado."}, {"motive": "Fibra instalada incorrectamente sobre mordaza.", "remedy": "Corregir el tendido y posicionar adecuadamente la fibra respecto de la mordaza."}, {"motive": "Pozo sin tapa o mal estado.", "remedy": "Colocar, reparar o gestionar el reemplazo de la tapa/elemento deteriorado y asegurar el pozo."}, {"motive": "Re-pintado de Pozo.", "remedy": "Realizar o gestionar el repintado del pozo conforme al estándar establecido."}, {"motive": "Re-pintado de Poste.", "remedy": "Realizar o gestionar el repintado e identificación correspondiente del poste."}, {"motive": "Elementos sin etiquetas acrílicas.", "remedy": "Instalar las etiquetas acrílicas de identificación correspondientes."}, {"motive": "Riesgo de derrumbe o deslave", "remedy": "Documentar la condición de riesgo y gestionar las acciones preventivas o correctivas necesarias."}, {"motive": "Riesgo de inundaciones", "remedy": "Documentar la condición de riesgo y gestionar medidas preventivas para proteger la infraestructura."}, {"motive": "Riesgo de incendio", "remedy": "Documentar la condición de riesgo y gestionar medidas preventivas para proteger la infraestructura."}];
 const $=s=>document.querySelector(s);
 const allPeople=DATA.crews.flatMap(c=>c.members.map(name=>({name,crew:c.code})));
 const state={draft:{},active:null};
 
 function saveActive(v){state.active=v;localStorage.setItem('interruta.active',JSON.stringify(v));refreshHome();}
 function loadActive(){try{state.active=JSON.parse(localStorage.getItem('interruta.active')||'null')}catch(e){state.active=null} refreshHome();}
-function show(screen){['#homeScreen','#setupScreen','#activeScreen','#nodeScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';$('#nodeActions').style.display=screen==='#nodeScreen'?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
+function show(screen){['#homeScreen','#setupScreen','#activeScreen','#nodeScreen','#noveltyScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';$('#nodeActions').style.display=screen==='#nodeScreen'?'block':'none';$('#noveltyActions').style.display=screen==='#noveltyScreen'?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
 function refreshHome(){$('#newBtn').classList.toggle('hidden',!!state.active);$('#continueBtn').classList.toggle('hidden',!state.active);$('#resetHomeBtn').classList.toggle('hidden',!state.active)}
 
 DATA.crews.forEach(c=>$('#crew').add(new Option(c.code,c.code)));
 DATA.routes.forEach((r,i)=>$('#route').add(new Option(r.name,String(i))));
+NOVELTY_CATALOG.forEach((x,i)=>$('#noveltyMotive').add(new Option(x.motive,String(i))));
 
 function populatePeople(){
  const crew=$('#crew').value;
@@ -166,7 +257,7 @@ function validate(){
 }
 function showRoute(){const v=$('#route').value;if(v===''){$('#routeBox').classList.add('hidden');validate();return};const r=DATA.routes[Number(v)];$('#routeName').textContent=r.name;$('#nodeChips').innerHTML=r.nodes.map(n=>`<span class="chip">${n}</span>`).join('');$('#routeBox').classList.remove('hidden');validate()}
 function openActive(){
- stopNodeCamera();
+ stopNodeCamera();stopAllNoveltyCameras();
  if(!state.active)return;
  state.active.nodes=state.active.nodes||{}; state.active.novelties=state.active.novelties||[]; state.active.paused=!!state.active.paused;
  const done=Object.keys(state.active.nodes).length,total=state.active.route.nodes.length,nov=state.active.novelties.length;
@@ -177,7 +268,9 @@ function openActive(){
  $('#nodeCardText').textContent=done===total?'Todos los nodos de la ruta están registrados.':`${done} de ${total} nodos registrados. Toca para continuar.`;
  $('#pausedBadge').classList.toggle('hidden',!state.active.paused); $('#pauseBtn').textContent=state.active.paused?'▶ Reanudar':'⏸ Pausar';
  $('#nodeCard').disabled=state.active.paused||done===total;
- $('#routeStatus').textContent=state.active.paused?'Recorrido pausado. Reanúdalo para registrar nueva información.':done===total?'Nodos completos. Continúa con las novedades del recorrido.':'Recorrido activo. Puedes registrar los nodos en cualquier orden.';
+ $('#noveltyCard').disabled=state.active.paused||nov>=20;
+ $('#noveltyCardText').textContent=nov>=20?'Las 20 novedades están completas.':`Registrar novedad ${nov+1} de 20.`;
+ $('#routeStatus').textContent=state.active.paused?'Recorrido pausado. Reanúdalo para registrar nueva información.':nov>=20&&done===total?'Nodos y novedades completos. El recorrido está listo para validación final.':`Recorrido activo. Novedades ${nov}/20 · Nodos ${done}/${total}.`;
  show('#activeScreen')
 }
 let nodePhotoData=null;
@@ -237,6 +330,113 @@ async function saveNode(){
  $('#nodeMeta').textContent=pos?`Guardado: ${new Date(now).toLocaleString()} · GPS ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`:`Guardado: ${new Date(now).toLocaleString()} · GPS no disponible`;
  $('#saveNodeBtn').textContent='Guardar nodo'; nodePhotoData=null;openActive();
 }
+
+let noveltyBeforePhoto=null, noveltyAfterPhoto=null, noveltySolved=null;
+let noveltyStreams={before:null,after:null};
+
+function stopNoveltyCamera(kind){
+ const stream=noveltyStreams[kind];
+ if(stream){stream.getTracks().forEach(t=>t.stop());noveltyStreams[kind]=null;}
+ const video=$(`#${kind}Camera`); if(video){video.srcObject=null;video.style.display='none';}
+ $(`#${kind}TakeBtn`).disabled=true;
+}
+function stopAllNoveltyCameras(){stopNoveltyCamera('before');stopNoveltyCamera('after');}
+async function startNoveltyCamera(kind){
+ if(kind==='before'){noveltyBeforePhoto=null;} else {noveltyAfterPhoto=null;}
+ const preview=$(`#${kind}Preview`);preview.style.display='none';preview.removeAttribute('src');
+ $(`#${kind}RetakeBtn`).classList.add('hidden');
+ stopNoveltyCamera(kind);
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+   $(`#${kind}Hint`).textContent='Este navegador no permite abrir la cámara directamente. Usa InterRuta por HTTPS en un navegador compatible.';
+   alert('No se puede acceder a la cámara directamente desde este navegador.');validateNovelty();return;
+ }
+ try{
+   const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+   noveltyStreams[kind]=stream;
+   const video=$(`#${kind}Camera`);video.srcObject=stream;video.style.display='block';await video.play();
+   $(`#${kind}OpenBtn`).textContent='📷 Cámara activa';$(`#${kind}OpenBtn`).disabled=true;$(`#${kind}TakeBtn`).disabled=false;
+   $(`#${kind}Hint`).textContent='Cámara activa. Encuadra la evidencia y pulsa “Tomar foto”.';
+ }catch(err){
+   $(`#${kind}OpenBtn`).disabled=false;$(`#${kind}OpenBtn`).textContent='📷 Activar cámara';
+   $(`#${kind}Hint`).textContent='No fue posible activar la cámara. Revisa el permiso de cámara del navegador.';
+   alert('No fue posible activar la cámara. Verifica el permiso del navegador.');
+ }
+}
+function takeNoveltyPhoto(kind){
+ const video=$(`#${kind}Camera`),stream=noveltyStreams[kind];if(!stream||!video.videoWidth||!video.videoHeight)return;
+ const maxWidth=800;let w=video.videoWidth,h=video.videoHeight;if(w>maxWidth){h=Math.round(h*maxWidth/w);w=maxWidth;}
+ const canvas=$(`#${kind}Canvas`);canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(video,0,0,w,h);
+ const data=canvas.toDataURL('image/jpeg',.58);
+ if(kind==='before')noveltyBeforePhoto=data;else noveltyAfterPhoto=data;
+ const preview=$(`#${kind}Preview`);preview.src=data;preview.style.display='block';stopNoveltyCamera(kind);
+ $(`#${kind}OpenBtn`).disabled=false;$(`#${kind}OpenBtn`).textContent='📷 Activar cámara';$(`#${kind}RetakeBtn`).classList.remove('hidden');
+ $(`#${kind}Hint`).textContent='Foto capturada desde la cámara. Puedes conservarla o repetirla.';
+ validateNovelty();
+}
+function resetNoveltyForm(){
+ stopAllNoveltyCameras();noveltyBeforePhoto=null;noveltyAfterPhoto=null;noveltySolved=null;
+ $('#noveltyMotive').value='';$('#suggestedRemedy').textContent='Selecciona el motivo para mostrar la recomendación técnica estándar.';
+ $('#technicalDetail').value='';$('#pendingDetail').value='';
+ ['before','after'].forEach(kind=>{const p=$(`#${kind}Preview`);p.style.display='none';p.removeAttribute('src');$(`#${kind}OpenBtn`).disabled=false;$(`#${kind}OpenBtn`).textContent='📷 Activar cámara';$(`#${kind}RetakeBtn`).classList.add('hidden');});
+ $('#beforeHint').textContent='La evidencia debe capturarse en vivo desde la cámara.';
+ $('#afterHint').textContent='La evidencia posterior debe capturarse en vivo desde la cámara.';
+ $('#solvedArea').classList.add('hidden');$('#pendingArea').classList.add('hidden');
+ $('#solvedYesBtn').classList.remove('selected');$('#solvedNoBtn').classList.remove('selected');
+ $('#noveltyMeta').textContent='Fecha/hora y GPS se capturarán automáticamente al completar la novedad.';
+ validateNovelty();
+}
+function renderCompletedNovelties(){
+ const items=state.active?.novelties||[];
+ $('#noveltyCompletedList').innerHTML=items.length?items.map((n,i)=>`<div class="completed-item"><div><b>Novedad ${i+1}</b><div>${n.motive}</div></div><span>${n.solved?'✓ Solucionada':'↗ Pendiente'}</span></div>`).join(''):'<div class="hint">Aún no hay novedades registradas.</div>';
+}
+function openNoveltyScreen(){
+ if(!state.active||state.active.paused)return;
+ state.active.novelties=state.active.novelties||[];if(state.active.novelties.length>=20){alert('Las 20 novedades ya fueron registradas.');return;}
+ resetNoveltyForm();
+ const next=state.active.novelties.length+1;$('#noveltyNumber').textContent=`Novedad ${next} de 20`;renderCompletedNovelties();show('#noveltyScreen');
+}
+function selectSolved(value){
+ noveltySolved=value;
+ $('#solvedYesBtn').classList.toggle('selected',value===true);$('#solvedNoBtn').classList.toggle('selected',value===false);
+ $('#solvedArea').classList.toggle('hidden',value!==true);$('#pendingArea').classList.toggle('hidden',value!==false);
+ if(value===true){$('#pendingDetail').value='';}else{stopNoveltyCamera('after');noveltyAfterPhoto=null;const p=$('#afterPreview');p.style.display='none';p.removeAttribute('src');}
+ validateNovelty();
+}
+function updateSuggestedRemedy(){
+ const v=$('#noveltyMotive').value;
+ $('#suggestedRemedy').textContent=v===''?'Selecciona el motivo para mostrar la recomendación técnica estándar.':NOVELTY_CATALOG[Number(v)].remedy;
+ validateNovelty();
+}
+function validateNovelty(){
+ const motive=$('#noveltyMotive').value,detail=$('#technicalDetail').value.trim(),pending=$('#pendingDetail').value.trim();
+ let ok=true,msg='✓ Novedad completa y lista para guardar.';
+ if(motive===''){ok=false;msg='Selecciona el motivo aparente.'}
+ else if(!noveltyBeforePhoto){ok=false;msg='Falta la foto ANTES.'}
+ else if(noveltySolved===null){ok=false;msg='Indica si la novedad fue solucionada durante el recorrido.'}
+ else if(noveltySolved===true&&!detail){ok=false;msg='Describe la intervención realizada.'}
+ else if(noveltySolved===true&&!noveltyAfterPhoto){ok=false;msg='Falta la foto DESPUÉS.'}
+ else if(noveltySolved===false&&!pending){ok=false;msg='Describe la tarea pendiente que debe escalarse al coordinador.'}
+ $('#noveltyValidation').textContent=msg;$('#saveNoveltyBtn').disabled=!ok;
+}
+async function saveNovelty(){
+ if($('#saveNoveltyBtn').disabled||!state.active)return;
+ $('#saveNoveltyBtn').disabled=true;$('#saveNoveltyBtn').textContent='Guardando...';
+ const pos=await getPosition(),now=new Date().toISOString(),cat=NOVELTY_CATALOG[Number($('#noveltyMotive').value)];
+ const item={
+   number:state.active.novelties.length+1,
+   capturedAt:now,position:pos,motive:cat.motive,suggestedRemedy:cat.remedy,
+   technicalDetail:$('#technicalDetail').value.trim(),beforePhoto:noveltyBeforePhoto,
+   solved:noveltySolved,afterPhoto:noveltySolved?noveltyAfterPhoto:null,
+   pendingTask:noveltySolved?null:`TAREA PENDIENTE – ESCALAR A COORDINADOR: ${$('#pendingDetail').value.trim()}`
+ };
+ state.active.novelties.push(item);
+ try{persistActive();}catch(e){
+   state.active.novelties.pop();alert('No fue posible guardar la novedad porque el almacenamiento local está lleno.');$('#saveNoveltyBtn').textContent='Completar novedad';validateNovelty();return;
+ }
+ $('#noveltyMeta').textContent=pos?`Guardado: ${new Date(now).toLocaleString()} · GPS ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`:`Guardado: ${new Date(now).toLocaleString()} · GPS no disponible`;
+ $('#saveNoveltyBtn').textContent='Completar novedad';stopAllNoveltyCameras();openActive();
+}
+
 function togglePause(){
  if(!state.active)return;
  if(state.active.paused){state.active.paused=false;state.active.resumedAt=new Date().toISOString();persistActive();openActive();return}
@@ -256,7 +456,7 @@ function clearSetup(){
  $('#startBtn').disabled=true;
 }
 function resetActive(){
- stopNodeCamera();
+ stopNodeCamera();stopAllNoveltyCameras();
  if(!state.active)return;
  const routeName=state.active.route?.name||'actual';
  const ok=confirm(`¿Restablecer el recorrido ${routeName}?\n\nSe eliminarán los datos del recorrido abierto y podrás seleccionar otra cuadrilla o ruta. Esta acción no se puede deshacer.`);
@@ -287,6 +487,20 @@ $('#startBtn').addEventListener('click',()=>{
 });
 
 $('#nodeCard').addEventListener('click',openNodeScreen);
+$('#noveltyCard').addEventListener('click',openNoveltyScreen);
+$('#backFromNoveltyBtn').addEventListener('click',openActive);
+$('#noveltyMotive').addEventListener('change',updateSuggestedRemedy);
+$('#technicalDetail').addEventListener('input',validateNovelty);
+$('#pendingDetail').addEventListener('input',validateNovelty);
+$('#solvedYesBtn').addEventListener('click',()=>selectSolved(true));
+$('#solvedNoBtn').addEventListener('click',()=>selectSolved(false));
+$('#beforeOpenBtn').addEventListener('click',()=>startNoveltyCamera('before'));
+$('#beforeTakeBtn').addEventListener('click',()=>takeNoveltyPhoto('before'));
+$('#beforeRetakeBtn').addEventListener('click',()=>startNoveltyCamera('before'));
+$('#afterOpenBtn').addEventListener('click',()=>startNoveltyCamera('after'));
+$('#afterTakeBtn').addEventListener('click',()=>takeNoveltyPhoto('after'));
+$('#afterRetakeBtn').addEventListener('click',()=>startNoveltyCamera('after'));
+$('#saveNoveltyBtn').addEventListener('click',saveNovelty);
 $('#backActiveBtn').addEventListener('click',openActive);
 $('#pauseBtn').addEventListener('click',togglePause);
 $('#nodeSelect').addEventListener('change',validateNode);

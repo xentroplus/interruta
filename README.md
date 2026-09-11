@@ -1,21 +1,25 @@
-# InterRuta v1.3
+# InterRuta v1.4
 
 Mini app PWA para el registro y generación de informes de recorridos preventivos en rutas interurbanas de fibra óptica.
 
 ## Incluye en esta versión
-- Inicio y creación de recorrido.
-- Catálogo de cuadrillas, personal, rutas y nodos.
-- Persistencia local del recorrido abierto.
-- Panel visual del recorrido con tarjetas de avance.
-- Registro de nodos en cualquier orden.
-- Fotografía exterior obligatoria mediante cámara del dispositivo.
-- Compresión local de fotografías.
-- Captura interna de fecha, hora y GPS al guardar cada nodo.
+- Inicio, creación y persistencia local de recorridos.
+- Catálogo oficial de cuadrillas, personal, rutas y nodos.
+- Panel de avance de nodos y novedades.
+- Registro flexible de nodos con fotografía exclusivamente desde cámara.
 - Pausa y reanudación del recorrido.
 - Restablecimiento manual del recorrido durante pruebas.
-- Preparación para el módulo de 20 novedades.
+- Registro guiado de 20 novedades obligatorias.
+- Catálogo de 30 motivos oficiales.
+- Remedio técnico sugerido no editable para cada motivo.
+- Foto ANTES obligatoria desde cámara.
+- Flujo diferenciado: novedad solucionada o tarea pendiente.
+- Foto DESPUÉS obligatoria únicamente cuando la novedad fue solucionada.
+- Tarea pendiente documentada y escalada al coordinador cuando no se soluciona.
+- Captura automática interna de fecha/hora y GPS.
+- Avance secuencial: no se puede completar la siguiente novedad sin cerrar correctamente la actual.
 
-
-## v1.3
-- Captura de fotografías exclusivamente mediante cámara en vivo con getUserMedia.
-- Se elimina el selector de archivos/galería para evidencias de nodos.
+## Control de versión
+- Versión visible en la app: v1.4
+- Cache PWA: interruta-v1.4
+- Paquete: InterRuta_v1.4.zip
