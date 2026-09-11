@@ -1,4 +1,4 @@
-# InterRuta v1.0
+# InterRuta v1.1
 
 Mini app PWA para recorridos interurbanos de Técnica Sucursal.
 
@@ -17,3 +17,9 @@ Mini app PWA para recorridos interurbanos de Técnica Sucursal.
 ## Publicación en GitHub Pages
 Repositorio recomendado: `interruta`.
 Subir todos los archivos de esta carpeta a la raíz del repositorio y activar GitHub Pages desde la rama `main`.
+
+
+## Cambios v1.1
+- Botón Limpiar datos antes de iniciar el recorrido.
+- Botón Restablecer recorrido con confirmación cuando existe un recorrido abierto.
+- Inicio permanece como navegación y no borra datos.

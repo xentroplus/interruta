@@ -45,7 +45,7 @@
 <body>
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.0</div></div>
+    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.1</div></div>
     <h1>InterRuta</h1><p class="sub">Recorridos Interurbanos · Técnica Sucursal</p>
   </header>
   <main class="content">
@@ -55,6 +55,7 @@
         <p>Inicia un recorrido preventivo, selecciona la cuadrilla y carga automáticamente los nodos de la ruta.</p>
         <button class="btn primary" id="newBtn" type="button">＋ Nuevo recorrido</button>
         <button class="btn primary hidden" id="continueBtn" type="button">▶ Continuar recorrido</button>
+        <button class="btn ghost hidden" id="resetHomeBtn" type="button" style="margin-top:10px;color:var(--danger);border-color:#e7caca">↺ Restablecer recorrido</button>
         <div class="status"><span class="dot"></span><span>Aplicación lista para trabajo local</span></div>
       </div>
       <div class="card"><div class="section-title">Reglas del recorrido</div>
@@ -83,9 +84,14 @@
       <div class="card"><div class="section-title">Siguiente módulo</div><p class="hint" style="margin:0">La estructura ya está preparada para incorporar las tarjetas <b>Registrar nodo</b> y <b>Registrar novedad</b> en la siguiente iteración.</p></div>
     </section>
   </main>
-  <div class="bottom" id="setupActions" style="display:none"><div class="row"><button class="btn ghost" id="homeBtn" type="button">⌂ Inicio</button><button class="btn primary" id="startBtn" type="button" disabled>Iniciar recorrido</button></div></div>
-  <div class="bottom" id="activeActions" style="display:none"><button class="btn secondary" id="activeHomeBtn" type="button">⌂ Ir al inicio</button></div>
-  <div class="footer">InterRuta · Técnica Sucursal · v1.0</div>
+  <div class="bottom" id="setupActions" style="display:none">
+    <div class="row"><button class="btn ghost" id="homeBtn" type="button">⌂ Inicio</button><button class="btn ghost" id="clearSetupBtn" type="button">↺ Limpiar datos</button></div>
+    <button class="btn primary" id="startBtn" type="button" disabled style="margin-top:10px">Iniciar recorrido</button>
+  </div>
+  <div class="bottom" id="activeActions" style="display:none">
+    <div class="row"><button class="btn secondary" id="activeHomeBtn" type="button">⌂ Ir al inicio</button><button class="btn ghost" id="resetActiveBtn" type="button" style="color:var(--danger);border-color:#e7caca">↺ Restablecer</button></div>
+  </div>
+  <div class="footer">InterRuta · Técnica Sucursal · v1.1</div>
 </div>
 <script>
 const DATA={"crews": [{"code": "IBA PROV IBA INT 01", "members": ["PALACIOS CRIOLLO JOSE LUIS", "CEVALLOS LOPEZ JOSE EDUARDO", "LOPEZ ORBES SANTIAGO MIGUEL"]}, {"code": "IBA PROV IBA INT 02", "members": ["PILCO CASTELLANO BRAYAN RAUL", "OCLES AREVALO FERNANDO ISMAEL"]}, {"code": "IBA PROV CAY INT 01", "members": ["TITO INLAGO SEGUNDO WIDINSON", "HUERTAS DELGADO DARIO JAVIER"]}, {"code": "IBA PROV SGA INT 01", "members": ["ERAZO MONTENEGRO ANGEL VINICIO", "VELASCO PILACUAN CRISTHOFER DAVID", "CEVALLOS GUERRERO DARWIN VLADIMIR"]}], "routes": [{"name": "Ibarra SDH - Cotama SDH", "gis": "IBA-Ibarra SDH (O)/Cotama SDH (A)-F01-BB", "nodes": ["Ibarra SDH", "Atuntaqui", "Cotacachi", "Cotama SDH"]}, {"name": "Cotama SDH - Tabacundo", "gis": "IBA-Cotama SDH (A)/Tabacundo SDH (O) - F01-BB", "nodes": ["Cotama SDH", "Tabacundo"]}, {"name": "Ibarra SDH - Urcuqui", "gis": "IBA-Ibarra SDH (O)/Urcuqui (E)-F02-BB", "nodes": ["Ibarra SDH", "Urcuqui"]}, {"name": "Urcuqui - Lita SDH", "gis": "IBA-Urcuqui (E)/Lita SDH (O)-F01-BB", "nodes": ["Urcuqui", "Lita SDH"]}, {"name": "Cotama SDH -San José de Minas", "gis": "OTA-Cotama SDH (A)/San Jose de Minas (E) - F01-BB", "nodes": ["Cotama SDH", "San José de Minas"]}, {"name": "Apuela – Pacto", "gis": "IBA-Pacto (E)/Apuela (E)-F01-BB (En Construcción)", "nodes": ["Apuela", "Pacto"]}, {"name": "Ibarra SDH - Cayambe SDH", "gis": "IBA-Ibarra SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Ibarra SDH", "Cayambe SDH"]}, {"name": "Cayambe - Pifo", "gis": "CAY-Pifo (E)/Cayambe SDH (O)-F01-BB", "nodes": ["Cayambe", "Pifo"]}, {"name": "Tabacundo - Malchingui", "gis": "MLGI-Malchingui (E)/Data Center uio (A)-Tabacundo SDH (O)-F01-BB", "nodes": ["Tabacundo", "Malchingui"]}, {"name": "Malchingui - Guayllabamba", "gis": "MLGI-Malchingui (E)/San Jose de Minas (E)-Guayllabamba (E)-F01-BB", "nodes": ["Malchingui", "Guayllabamba"]}, {"name": "Tabacundo - Cayambe", "gis": "TAB-Tabacundo SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Tabacundo", "Cayambe"]}, {"name": "Guayllabamba-San Jose de Minas", "gis": "GBB-San Jose de Minas (E)/Guayllabamba (E)-F01-BB", "nodes": ["Guayllabamba", "Perucho", "San Jose de Minas"]}, {"name": "Quinche - Guayllabamba", "gis": "UIO-Quinche (E)/Guayllabamba (E)-F01-BB", "nodes": ["Quinche", "Guayllabamba"]}, {"name": "Cuzubamba - Pifo", "gis": "UIO-Pifo (E)/Cuzubamba-F01-BB", "nodes": ["Cuzubamba", "Pifo"]}, {"name": "Bolivar SDH - Ibarra SDH F02", "gis": "BOL-Bolivar SDH (O)-Ibarra SDH (O)/Tulcan SDH (O)/F2-D01-DB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F02", "gis": "IBA-El Angel (O)/Ibarra SDH (O)-F02-BB", "nodes": ["El Angel SDH", "Ibarra SDH"]}, {"name": "San Gabriel SDH - Ibarra SDH F02", "gis": "IBA-Ibarra SDH (O)/San Gabriel (E)-Tulcan SDH (O)-F01-BB", "nodes": ["San Gabriel SDH", "Ibarra SDH"]}, {"name": "Bolivar SDH - Ibarra SDH F01", "gis": "IBA-Bolivar SDH (O)/Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F01", "gis": "IBA-Ibarra SDH (O)/El Angel (O)-F01-BB", "nodes": ["El Angel SDH", "Mira", "Ibarra SDH"]}, {"name": "Tulcan SDH - Bolivar SDH F01", "gis": "TUL-Tulcan SDH (O)/Bolivar SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Julio Andrade - Santa Barbara", "gis": "JULA-Julio Andrade (E)/Santa Barbara (E)-F01-BB", "nodes": ["Julio Andrade", "Santa Barbara"]}, {"name": "Sta. Barbara - La Bonita", "gis": "LBNT-Santa Barbara (E)/La Bonita (E)-F01-BB", "nodes": ["Sta. Barbara", "La Bonita"]}, {"name": "Tulcan SDH - El Angel SDH F01", "gis": "IBA-El Angel (O)/Tulcan SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - El Angel SDH F02", "gis": "TUL-Tulcan SDH (O)/El Angel (O)-F02-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - Bolivar SDH  F02", "gis": "IBA-Bolivar SDH (O)/Tulcan SDH (O)-Ibarra SDH (O)-F02-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Tulcan- Rumichaca Principal", "gis": "TUL-Tulcan SDH (O)/N/A-F01-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Tulcan-Rumichaca Backup", "gis": "TUL-Tulcan SDH (O)/N/A-F02-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Bolivar - Pimapiro", "gis": "IBA-Pimampiro (E)/Tulcan SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar", "Pimapiro"]}, {"name": "Pimampiro - Ibarra", "gis": "IBA-Pimampiro (E)/Bolivar SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Pimampiro", "Ibarra"]}]};
@@ -96,7 +102,7 @@ const state={draft:{},active:null};
 function saveActive(v){state.active=v;localStorage.setItem('interruta.active',JSON.stringify(v));refreshHome();}
 function loadActive(){try{state.active=JSON.parse(localStorage.getItem('interruta.active')||'null')}catch(e){state.active=null} refreshHome();}
 function show(screen){['#homeScreen','#setupScreen','#activeScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
-function refreshHome(){$('#newBtn').classList.toggle('hidden',!!state.active);$('#continueBtn').classList.toggle('hidden',!state.active)}
+function refreshHome(){$('#newBtn').classList.toggle('hidden',!!state.active);$('#continueBtn').classList.toggle('hidden',!state.active);$('#resetHomeBtn').classList.toggle('hidden',!state.active)}
 
 DATA.crews.forEach(c=>$('#crew').add(new Option(c.code,c.code)));
 DATA.routes.forEach((r,i)=>$('#route').add(new Option(r.name,String(i))));
@@ -122,11 +128,35 @@ function validate(){
 }
 function showRoute(){const v=$('#route').value;if(v===''){$('#routeBox').classList.add('hidden');validate();return};const r=DATA.routes[Number(v)];$('#routeName').textContent=r.name;$('#nodeChips').innerHTML=r.nodes.map(n=>`<span class="chip">${n}</span>`).join('');$('#routeBox').classList.remove('hidden');validate()}
 function openActive(){if(!state.active)return;$('#activeRoute').textContent=state.active.route.name;$('#activeCrew').textContent=`${state.active.crew} · Responsable: ${state.active.responsible}`;$('#nodeMetric').textContent=`0 / ${state.active.route.nodes.length}`;show('#activeScreen')}
+function clearSetup(){
+ $('#crew').value='';
+ populatePeople();
+ $('#route').value='';
+ $('#routeBox').classList.add('hidden');
+ $('#crossWarning').style.display='none';
+ $('#validation').textContent='Completa los campos obligatorios para habilitar el inicio del recorrido.';
+ $('#startBtn').disabled=true;
+}
+function resetActive(){
+ if(!state.active)return;
+ const routeName=state.active.route?.name||'actual';
+ const ok=confirm(`¿Restablecer el recorrido ${routeName}?\n\nSe eliminarán los datos del recorrido abierto y podrás seleccionar otra cuadrilla o ruta. Esta acción no se puede deshacer.`);
+ if(!ok)return;
+ localStorage.removeItem('interruta.active');
+ state.active=null;
+ clearSetup();
+ refreshHome();
+ show('#homeScreen');
+}
+
 
 $('#newBtn').addEventListener('click',()=>show('#setupScreen'));
 $('#continueBtn').addEventListener('click',openActive);
 $('#homeBtn').addEventListener('click',()=>show('#homeScreen'));
 $('#activeHomeBtn').addEventListener('click',()=>show('#homeScreen'));
+$('#clearSetupBtn').addEventListener('click',()=>{if(confirm('¿Limpiar los datos seleccionados y comenzar el formulario nuevamente?')) clearSetup();});
+$('#resetHomeBtn').addEventListener('click',resetActive);
+$('#resetActiveBtn').addEventListener('click',resetActive);
 $('#crew').addEventListener('change',populatePeople);
 ['#responsible','#collab1','#collab2'].forEach(id=>$(id).addEventListener('change',validate));
 $('#route').addEventListener('change',showRoute);
