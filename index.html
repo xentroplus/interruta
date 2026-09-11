@@ -59,6 +59,7 @@
     .completed-item b{color:var(--blue)}
     .paused-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;background:#fff5dc;color:#815600;border:1px solid #ecd899;margin-bottom:10px}
     .hidden{display:none!important}
+    .report-ok{background:#eef8f3;border:1px solid #bddfcd;color:#176946;border-radius:14px;padding:12px;font-size:13px;line-height:1.5}.report-actions{display:grid;gap:10px}.check-list{display:grid;gap:8px}.check-line{display:flex;gap:9px;align-items:flex-start;font-size:13px}.check-line.ok{color:var(--ok)}.check-line.bad{color:var(--danger)}
     .bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(760px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(243,247,250,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
     @media(max-width:480px){.row,.summary-grid,.action-grid{grid-template-columns:1fr} h1{font-size:29px} .top{border-radius:0 0 22px 22px}}
   </style>
@@ -66,7 +67,7 @@
 <body>
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.4</div></div>
+    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.5</div></div>
     <h1>InterRuta</h1><p class="sub">Recorridos Interurbanos · Técnica Sucursal</p>
   </header>
   <main class="content">
@@ -203,6 +204,30 @@
         <div id="noveltyCompletedList" class="completed-list"><div class="hint">Aún no hay novedades registradas.</div></div>
       </div>
     </section>
+
+    <section id="finalScreen" class="hidden">
+      <div class="card">
+        <div class="section-title">Cierre del recorrido</div>
+        <h2 style="margin:0 0 6px">Validación final</h2>
+        <p class="hint" style="margin-top:0">InterRuta verifica que el recorrido esté completo antes de generar el informe oficial.</p>
+        <div id="finalChecklist" class="check-list" style="margin-top:14px"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Datos finales del informe</div>
+        <div class="field"><label for="coordinator">Coordinador Fibra Óptica</label><input id="coordinator" type="text" autocomplete="off" placeholder="Nombre del coordinador" style="width:100%;min-height:48px;border:1px solid #cbdce6;border-radius:12px;background:white;padding:0 12px;color:var(--text);font-size:16px"></div>
+        <div class="field"><label for="generalObservations">Observaciones generales <span style="font-weight:500;color:var(--muted)">(opcional)</span></label><textarea id="generalObservations" placeholder="Observaciones generales del recorrido..."></textarea></div>
+        <div class="alert" id="finalValidation" style="display:block;background:#f7fbfd;color:var(--muted);border-color:var(--line)">Completa la validación para generar el informe.</div>
+      </div>
+      <div id="reportReadyCard" class="card hidden">
+        <div class="section-title">Informe generado</div>
+        <div class="report-ok">✓ El recorrido quedó finalizado. Puedes descargar o compartir nuevamente el informe.</div>
+        <div class="report-actions" style="margin-top:12px">
+          <button class="btn primary" id="downloadReportBtn" type="button">⬇ Descargar informe Excel</button>
+          <button class="btn secondary" id="shareReportBtn" type="button">↗ Compartir informe</button>
+          <button class="btn ghost" id="finalHomeBtn" type="button">⌂ Ir al inicio</button>
+        </div>
+      </div>
+    </section>
   </main>
   <div class="bottom" id="setupActions" style="display:none">
     <div class="row"><button class="btn ghost" id="homeBtn" type="button">⌂ Inicio</button><button class="btn ghost" id="clearSetupBtn" type="button">↺ Limpiar datos</button></div>
@@ -210,6 +235,7 @@
   </div>
   <div class="bottom" id="activeActions" style="display:none">
     <div class="row"><button class="btn secondary" id="activeHomeBtn" type="button">⌂ Ir al inicio</button><button class="btn ghost" id="pauseBtn" type="button">⏸ Pausar</button></div>
+    <button class="btn primary" id="finalizeBtn" type="button" disabled style="margin-top:10px">✓ Finalizar recorrido</button>
     <button class="btn ghost" id="resetActiveBtn" type="button" style="margin-top:10px;color:var(--danger);border-color:#e7caca">↺ Restablecer recorrido</button>
   </div>
   <div class="bottom" id="nodeActions" style="display:none">
@@ -218,7 +244,10 @@
   <div class="bottom" id="noveltyActions" style="display:none">
     <div class="row"><button class="btn ghost" id="backFromNoveltyBtn" type="button">← Volver al recorrido</button><button class="btn primary" id="saveNoveltyBtn" type="button" disabled>Completar novedad</button></div>
   </div>
-  <div class="footer">InterRuta · Técnica Sucursal · v1.4</div>
+  <div class="bottom" id="finalActions" style="display:none">
+    <div class="row"><button class="btn ghost" id="backFromFinalBtn" type="button">← Volver al recorrido</button><button class="btn primary" id="generateReportBtn" type="button" disabled>Generar informe Excel</button></div>
+  </div>
+  <div class="footer">InterRuta · Técnica Sucursal · v1.5</div>
 </div>
 <script>
 const DATA={"crews": [{"code": "IBA PROV IBA INT 01", "members": ["PALACIOS CRIOLLO JOSE LUIS", "CEVALLOS LOPEZ JOSE EDUARDO", "LOPEZ ORBES SANTIAGO MIGUEL"]}, {"code": "IBA PROV IBA INT 02", "members": ["PILCO CASTELLANO BRAYAN RAUL", "OCLES AREVALO FERNANDO ISMAEL"]}, {"code": "IBA PROV CAY INT 01", "members": ["TITO INLAGO SEGUNDO WIDINSON", "HUERTAS DELGADO DARIO JAVIER"]}, {"code": "IBA PROV SGA INT 01", "members": ["ERAZO MONTENEGRO ANGEL VINICIO", "VELASCO PILACUAN CRISTHOFER DAVID", "CEVALLOS GUERRERO DARWIN VLADIMIR"]}], "routes": [{"name": "Ibarra SDH - Cotama SDH", "gis": "IBA-Ibarra SDH (O)/Cotama SDH (A)-F01-BB", "nodes": ["Ibarra SDH", "Atuntaqui", "Cotacachi", "Cotama SDH"]}, {"name": "Cotama SDH - Tabacundo", "gis": "IBA-Cotama SDH (A)/Tabacundo SDH (O) - F01-BB", "nodes": ["Cotama SDH", "Tabacundo"]}, {"name": "Ibarra SDH - Urcuqui", "gis": "IBA-Ibarra SDH (O)/Urcuqui (E)-F02-BB", "nodes": ["Ibarra SDH", "Urcuqui"]}, {"name": "Urcuqui - Lita SDH", "gis": "IBA-Urcuqui (E)/Lita SDH (O)-F01-BB", "nodes": ["Urcuqui", "Lita SDH"]}, {"name": "Cotama SDH -San José de Minas", "gis": "OTA-Cotama SDH (A)/San Jose de Minas (E) - F01-BB", "nodes": ["Cotama SDH", "San José de Minas"]}, {"name": "Apuela – Pacto", "gis": "IBA-Pacto (E)/Apuela (E)-F01-BB (En Construcción)", "nodes": ["Apuela", "Pacto"]}, {"name": "Ibarra SDH - Cayambe SDH", "gis": "IBA-Ibarra SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Ibarra SDH", "Cayambe SDH"]}, {"name": "Cayambe - Pifo", "gis": "CAY-Pifo (E)/Cayambe SDH (O)-F01-BB", "nodes": ["Cayambe", "Pifo"]}, {"name": "Tabacundo - Malchingui", "gis": "MLGI-Malchingui (E)/Data Center uio (A)-Tabacundo SDH (O)-F01-BB", "nodes": ["Tabacundo", "Malchingui"]}, {"name": "Malchingui - Guayllabamba", "gis": "MLGI-Malchingui (E)/San Jose de Minas (E)-Guayllabamba (E)-F01-BB", "nodes": ["Malchingui", "Guayllabamba"]}, {"name": "Tabacundo - Cayambe", "gis": "TAB-Tabacundo SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Tabacundo", "Cayambe"]}, {"name": "Guayllabamba-San Jose de Minas", "gis": "GBB-San Jose de Minas (E)/Guayllabamba (E)-F01-BB", "nodes": ["Guayllabamba", "Perucho", "San Jose de Minas"]}, {"name": "Quinche - Guayllabamba", "gis": "UIO-Quinche (E)/Guayllabamba (E)-F01-BB", "nodes": ["Quinche", "Guayllabamba"]}, {"name": "Cuzubamba - Pifo", "gis": "UIO-Pifo (E)/Cuzubamba-F01-BB", "nodes": ["Cuzubamba", "Pifo"]}, {"name": "Bolivar SDH - Ibarra SDH F02", "gis": "BOL-Bolivar SDH (O)-Ibarra SDH (O)/Tulcan SDH (O)/F2-D01-DB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F02", "gis": "IBA-El Angel (O)/Ibarra SDH (O)-F02-BB", "nodes": ["El Angel SDH", "Ibarra SDH"]}, {"name": "San Gabriel SDH - Ibarra SDH F02", "gis": "IBA-Ibarra SDH (O)/San Gabriel (E)-Tulcan SDH (O)-F01-BB", "nodes": ["San Gabriel SDH", "Ibarra SDH"]}, {"name": "Bolivar SDH - Ibarra SDH F01", "gis": "IBA-Bolivar SDH (O)/Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F01", "gis": "IBA-Ibarra SDH (O)/El Angel (O)-F01-BB", "nodes": ["El Angel SDH", "Mira", "Ibarra SDH"]}, {"name": "Tulcan SDH - Bolivar SDH F01", "gis": "TUL-Tulcan SDH (O)/Bolivar SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Julio Andrade - Santa Barbara", "gis": "JULA-Julio Andrade (E)/Santa Barbara (E)-F01-BB", "nodes": ["Julio Andrade", "Santa Barbara"]}, {"name": "Sta. Barbara - La Bonita", "gis": "LBNT-Santa Barbara (E)/La Bonita (E)-F01-BB", "nodes": ["Sta. Barbara", "La Bonita"]}, {"name": "Tulcan SDH - El Angel SDH F01", "gis": "IBA-El Angel (O)/Tulcan SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - El Angel SDH F02", "gis": "TUL-Tulcan SDH (O)/El Angel (O)-F02-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - Bolivar SDH  F02", "gis": "IBA-Bolivar SDH (O)/Tulcan SDH (O)-Ibarra SDH (O)-F02-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Tulcan- Rumichaca Principal", "gis": "TUL-Tulcan SDH (O)/N/A-F01-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Tulcan-Rumichaca Backup", "gis": "TUL-Tulcan SDH (O)/N/A-F02-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Bolivar - Pimapiro", "gis": "IBA-Pimampiro (E)/Tulcan SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar", "Pimapiro"]}, {"name": "Pimampiro - Ibarra", "gis": "IBA-Pimampiro (E)/Bolivar SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Pimampiro", "Ibarra"]}]};
@@ -229,8 +258,8 @@ const state={draft:{},active:null};
 
 function saveActive(v){state.active=v;localStorage.setItem('interruta.active',JSON.stringify(v));refreshHome();}
 function loadActive(){try{state.active=JSON.parse(localStorage.getItem('interruta.active')||'null')}catch(e){state.active=null} refreshHome();}
-function show(screen){['#homeScreen','#setupScreen','#activeScreen','#nodeScreen','#noveltyScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';$('#nodeActions').style.display=screen==='#nodeScreen'?'block':'none';$('#noveltyActions').style.display=screen==='#noveltyScreen'?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
-function refreshHome(){$('#newBtn').classList.toggle('hidden',!!state.active);$('#continueBtn').classList.toggle('hidden',!state.active);$('#resetHomeBtn').classList.toggle('hidden',!state.active)}
+function show(screen){['#homeScreen','#setupScreen','#activeScreen','#nodeScreen','#noveltyScreen','#finalScreen'].forEach(id=>$(id).classList.add('hidden'));$(screen).classList.remove('hidden');$('#setupActions').style.display=screen==='#setupScreen'?'block':'none';$('#activeActions').style.display=screen==='#activeScreen'?'block':'none';$('#nodeActions').style.display=screen==='#nodeScreen'?'block':'none';$('#noveltyActions').style.display=screen==='#noveltyScreen'?'block':'none';$('#finalActions').style.display=screen==='#finalScreen'&&!state.active?.finalized?'block':'none';window.scrollTo({top:0,behavior:'smooth'})}
+function refreshHome(){const finalized=!!state.active?.finalized;$('#newBtn').classList.toggle('hidden',!!state.active&&!finalized);$('#continueBtn').classList.toggle('hidden',!state.active);$('#continueBtn').textContent=finalized?'📄 Ver informe finalizado':'▶ Continuar recorrido';$('#resetHomeBtn').classList.toggle('hidden',!state.active||finalized)}
 
 DATA.crews.forEach(c=>$('#crew').add(new Option(c.code,c.code)));
 DATA.routes.forEach((r,i)=>$('#route').add(new Option(r.name,String(i))));
@@ -257,6 +286,7 @@ function validate(){
 }
 function showRoute(){const v=$('#route').value;if(v===''){$('#routeBox').classList.add('hidden');validate();return};const r=DATA.routes[Number(v)];$('#routeName').textContent=r.name;$('#nodeChips').innerHTML=r.nodes.map(n=>`<span class="chip">${n}</span>`).join('');$('#routeBox').classList.remove('hidden');validate()}
 function openActive(){
+ if(state.active?.finalized){openFinalScreen();return;}
  stopNodeCamera();stopAllNoveltyCameras();
  if(!state.active)return;
  state.active.nodes=state.active.nodes||{}; state.active.novelties=state.active.novelties||[]; state.active.paused=!!state.active.paused;
@@ -271,6 +301,7 @@ function openActive(){
  $('#noveltyCard').disabled=state.active.paused||nov>=20;
  $('#noveltyCardText').textContent=nov>=20?'Las 20 novedades están completas.':`Registrar novedad ${nov+1} de 20.`;
  $('#routeStatus').textContent=state.active.paused?'Recorrido pausado. Reanúdalo para registrar nueva información.':nov>=20&&done===total?'Nodos y novedades completos. El recorrido está listo para validación final.':`Recorrido activo. Novedades ${nov}/20 · Nodos ${done}/${total}.`;
+ $('#finalizeBtn').disabled=state.active.paused||nov<20||done<total;
  show('#activeScreen')
 }
 let nodePhotoData=null;
@@ -469,7 +500,7 @@ function resetActive(){
 }
 
 
-$('#newBtn').addEventListener('click',()=>show('#setupScreen'));
+$('#newBtn').addEventListener('click',()=>{if(state.active?.finalized){localStorage.removeItem('interruta.active');state.active=null;refreshHome();}show('#setupScreen')});
 $('#continueBtn').addEventListener('click',openActive);
 $('#homeBtn').addEventListener('click',()=>show('#homeScreen'));
 $('#activeHomeBtn').addEventListener('click',()=>show('#homeScreen'));
@@ -508,6 +539,45 @@ $('#openCameraBtn').addEventListener('click',startNodeCamera);
 $('#takePhotoBtn').addEventListener('click',takeNodePhoto);
 $('#retakePhotoBtn').addEventListener('click',startNodeCamera);
 $('#saveNodeBtn').addEventListener('click',saveNode);
+// ----- Cierre y generación del informe oficial XLSX -----
+let lastReportBlob=null,lastReportName='';
+function registeredNodesInOrder(){return Object.values(state.active?.nodes||{}).sort((a,b)=>new Date(a.capturedAt)-new Date(b.capturedAt))}
+function renderFinalChecklist(){
+ const a=state.active||{},nov=a.novelties||[],nodes=Object.keys(a.nodes||{}).length,total=a.route?.nodes?.length||0,solved=nov.filter(n=>n.solved).length,pending=nov.length-solved;
+ const lines=[[nov.length===20,`20 novedades completas (${solved} solucionadas · ${pending} pendientes)`],[nodes===total&&total>0,`Todos los nodos registrados (${nodes}/${total})`],[nov.every(n=>!!n.beforePhoto),'Todas las novedades tienen foto ANTES'],[nov.every(n=>!n.solved||!!n.afterPhoto),'Las novedades solucionadas tienen foto DESPUÉS'],[nov.every(n=>n.solved||!!n.pendingTask),'Las novedades pendientes tienen tarea documentada']];
+ $('#finalChecklist').innerHTML=lines.map(([ok,t])=>`<div class="check-line ${ok?'ok':'bad'}"><span>${ok?'✓':'✕'}</span><span>${t}</span></div>`).join('');return lines.every(x=>x[0])
+}
+function validateFinal(){const complete=renderFinalChecklist(),coord=$('#coordinator').value.trim(),ok=complete&&!!coord;$('#generateReportBtn').disabled=!ok;$('#finalValidation').textContent=!complete?'El recorrido todavía tiene elementos incompletos.':!coord?'Ingresa el nombre del Coordinador Fibra Óptica.':'✓ Validación completa. El informe oficial puede generarse.';return ok}
+function openFinalScreen(){if(!state.active)return;$('#coordinator').value=state.active.coordinator||'';$('#generalObservations').value=state.active.generalObservations||'';const done=!!state.active.finalized;$('#reportReadyCard').classList.toggle('hidden',!done);show('#finalScreen');$('#finalActions').style.display=done?'none':'block';validateFinal()}
+function escXml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function cleanCellAttrs(attrs){return attrs.replace(/\s+t="[^"]*"/g,'').replace(/\s*\/$/,'')}
+function setCellInline(xml,ref,value){const self=new RegExp(`<c\\b([^>]*\\br="${ref}"[^>]*)\\s*/>`),sm=xml.match(self);if(sm){const attrs=cleanCellAttrs(sm[1]);return xml.replace(self,`<c${attrs} t="inlineStr"><is><t xml:space="preserve">${escXml(value)}</t></is></c>`)}const re=new RegExp(`<c\\b([^>]*\\br="${ref}"[^>]*)>[\\s\\S]*?<\\/c>`),m=xml.match(re);if(!m)return xml;const attrs=cleanCellAttrs(m[1]);return xml.replace(re,`<c${attrs} t="inlineStr"><is><t xml:space="preserve">${escXml(value)}</t></is></c>`)}
+function setCellNumber(xml,ref,value){const self=new RegExp(`<c\\b([^>]*\\br="${ref}"[^>]*)\\s*/>`),sm=xml.match(self);if(sm){const attrs=cleanCellAttrs(sm[1]);return xml.replace(self,`<c${attrs}><v>${Number(value)}</v></c>`)}const re=new RegExp(`<c\\b([^>]*\\br="${ref}"[^>]*)>[\\s\\S]*?<\\/c>`),m=xml.match(re);if(!m)return xml;const attrs=cleanCellAttrs(m[1]);return xml.replace(re,`<c${attrs}><v>${Number(value)}</v></c>`)}
+function excelDateSerial(d){const x=new Date(d);return (Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())-Date.UTC(1899,11,30))/86400000}
+function excelTimeSerial(d){const x=new Date(d);return (x.getHours()*3600+x.getMinutes()*60+x.getSeconds())/86400}
+function textBytes(v){return new TextEncoder().encode(v)}function bytesText(v){return new TextDecoder().decode(v)}
+function dataUrlBytes(data){const raw=atob((data.split(',')[1]||'')),u=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)u[i]=raw.charCodeAt(i);return u}
+function photoAnchor(rid,id,row1,row2,col1,col2,name){return `<ns0:twoCellAnchor editAs="oneCell"><ns0:from><ns0:col>${col1}</ns0:col><ns0:colOff>50000</ns0:colOff><ns0:row>${row1}</ns0:row><ns0:rowOff>50000</ns0:rowOff></ns0:from><ns0:to><ns0:col>${col2}</ns0:col><ns0:colOff>0</ns0:colOff><ns0:row>${row2}</ns0:row><ns0:rowOff>0</ns0:rowOff></ns0:to><ns0:pic><ns0:nvPicPr><ns0:cNvPr id="${id}" name="${escXml(name)}"/><ns0:cNvPicPr><ns1:picLocks noChangeAspect="1"/></ns0:cNvPicPr></ns0:nvPicPr><ns0:blipFill><ns1:blip ns3:embed="${rid}"/><ns1:stretch><ns1:fillRect/></ns1:stretch></ns0:blipFill><ns0:spPr><ns1:prstGeom prst="rect"><ns1:avLst/></ns1:prstGeom></ns0:spPr></ns0:pic><ns0:clientData/></ns0:twoCellAnchor>`}
+function crc32(bytes){let c=0xffffffff;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^0xffffffff)>>>0}function u16(n){return[n&255,n>>>8&255]}function u32(n){return[n&255,n>>>8&255,n>>>16&255,n>>>24&255]}
+function makeZip(entries){const locals=[],centrals=[];let offset=0;for(const e of entries){const name=textBytes(e.name),data=e.data,crc=crc32(data),local=new Uint8Array(30+name.length+data.length);let a=0,put=x=>{local.set(x,a);a+=x.length};put(u32(0x04034b50));put(u16(20));put(u16(0));put(u16(0));put(u16(0));put(u16(0));put(u32(crc));put(u32(data.length));put(u32(data.length));put(u16(name.length));put(u16(0));put(name);put(data);locals.push(local);const cen=new Uint8Array(46+name.length);a=0;put=x=>{cen.set(x,a);a+=x.length};put(u32(0x02014b50));put(u16(20));put(u16(20));put(u16(0));put(u16(0));put(u16(0));put(u16(0));put(u32(crc));put(u32(data.length));put(u32(data.length));put(u16(name.length));put(u16(0));put(u16(0));put(u16(0));put(u16(0));put(u32(0));put(u32(offset));put(name);centrals.push(cen);offset+=local.length}const centralSize=centrals.reduce((n,x)=>n+x.length,0),end=new Uint8Array(22);let a=0,put=x=>{end.set(x,a);a+=x.length};put(u32(0x06054b50));put(u16(0));put(u16(0));put(u16(entries.length));put(u16(entries.length));put(u32(centralSize));put(u32(offset));put(u16(0));return new Blob([...locals,...centrals,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+async function loadTemplateParts(){const m=await fetch('report_template/manifest.json').then(r=>r.json()),parts={};for(const name of m.files){const r=await fetch('report_template/'+name);if(!r.ok)throw new Error(name);parts[name]=new Uint8Array(await r.arrayBuffer())}return parts}
+function fillReportXml(parts){
+ const a=state.active,ordered=registeredNodesInOrder(),start=ordered[0],end=ordered[ordered.length-1],mid=ordered.slice(1,-1),ended=a.finalizedAt||new Date().toISOString();
+ let x=bytesText(parts['xl/worksheets/sheet1.xml']);x=setCellNumber(x,'B6',excelDateSerial(a.startedAt));x=setCellNumber(x,'C6',excelTimeSerial(a.startedAt));x=setCellNumber(x,'D6',excelTimeSerial(ended));x=setCellInline(x,'B7',a.route.name);x=setCellInline(x,'B8',a.crew);x=setCellInline(x,'B9',start?.name||'');
+ (a.novelties||[]).forEach((n,i)=>{const r=11+i*6;x=setCellNumber(x,`B${r}`,excelDateSerial(n.capturedAt));x=setCellNumber(x,`C${r}`,excelTimeSerial(n.capturedAt));x=setCellNumber(x,`D${r}`,excelTimeSerial(n.capturedAt));x=setCellInline(x,`B${r+1}`,n.motive);x=setCellInline(x,`B${r+2}`,[n.suggestedRemedy,n.technicalDetail].filter(Boolean).join(' Detalle técnico: '));x=setCellInline(x,`B${r+3}`,n.pendingTask||'');x=setCellInline(x,`B${r+4}`,n.position?`${n.position.lat.toFixed(6)}, ${n.position.lng.toFixed(6)}`:'GPS no disponible')});
+ x=setCellInline(x,'B130',end?.name||'');x=setCellInline(x,'B131',a.responsible||'');x=setCellInline(x,'B132',[a.collab1,a.collab2].filter(Boolean).join(' / '));x=setCellInline(x,'B133',a.coordinator||'');x=setCellNumber(x,'B134',ordered.length+(a.novelties||[]).reduce((q,n)=>q+1+(n.afterPhoto?1:0),0));x=setCellInline(x,'B135',a.generalObservations||'');parts['xl/worksheets/sheet1.xml']=textBytes(x);
+ let s2=bytesText(parts['xl/worksheets/sheet2.xml']);s2=setCellInline(s2,'D8',start?`NODO ${start.name}`:'');s2=setCellInline(s2,'D365',end?`NODO ${end.name}`:'');['D382','D398','D414'].forEach((r,i)=>s2=setCellInline(s2,r,mid[i]?`NODO ${mid[i].name}`:''));for(let i=0;i<20;i++)s2=setCellInline(s2,`B${24+i*17}`,`NOVEDAD # ${i+1}`);parts['xl/worksheets/sheet2.xml']=textBytes(s2);
+ let s6=bytesText(parts['xl/worksheets/sheet6.xml']);const counts={};(a.novelties||[]).forEach(n=>counts[n.motive]=(counts[n.motive]||0)+1);NOVELTY_CATALOG.forEach((item,i)=>{const row=14+i,c=counts[item.motive]||0;s6=setCellInline(s6,`C${row}`,c?'✔':'');s6=setCellNumber(s6,`H${row}`,c)});s6=setCellInline(s6,'C8','');s6=setCellInline(s6,'C10','');s6=setCellInline(s6,'C45',a.generalObservations||'');parts['xl/worksheets/sheet6.xml']=textBytes(s6);
+ const photos=[];if(start)photos.push([start.photo,7,21,2,3,'Nodo inicial']);(a.novelties||[]).forEach((n,i)=>{const r=24+i*17;photos.push([n.beforePhoto,r,r+14,2,3,`Novedad ${i+1} antes`]);if(n.afterPhoto)photos.push([n.afterPhoto,r,r+14,3,4,`Novedad ${i+1} después`])});if(end)photos.push([end.photo,364,378,2,3,'Nodo final']);mid.slice(0,3).forEach((n,i)=>photos.push([n.photo,381+i*16,394+i*16,2,3,`Nodo intermedio ${i+1}`]));
+ let drawing=bytesText(parts['xl/drawings/drawing2.xml']),rels=bytesText(parts['xl/drawings/_rels/drawing2.xml.rels']),anchors='',rr='';photos.filter(p=>p[0]).forEach((p,i)=>{const rid=`rId${i+2}`,fname=`interruta_${String(i+1).padStart(2,'0')}.jpeg`;anchors+=photoAnchor(rid,100+i,p[1],p[2],p[3],p[4],p[5]);rr+=`<ns0:Relationship Id="${rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/${fname}" />`;parts[`xl/media/${fname}`]=dataUrlBytes(p[0])});drawing=drawing.replace(/<\/ns0:wsDr>\s*$/,anchors+'</ns0:wsDr>');rels=rels.replace(/<\/ns0:Relationships>\s*$/,rr+'</ns0:Relationships>');parts['xl/drawings/drawing2.xml']=textBytes(drawing);parts['xl/drawings/_rels/drawing2.xml.rels']=textBytes(rels);return parts
+}
+async function buildReportBlob(){const parts=fillReportXml(await loadTemplateParts());return makeZip(Object.keys(parts).sort().map(name=>({name,data:parts[name]})))}
+function reportFilename(){const d=new Date(state.active.finalizedAt||Date.now()),pad=n=>String(n).padStart(2,'0'),date=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,route=(state.active.route.name||'RUTA').replace(/[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ_-]+/g,'_');return `${date}_INFORME_RECORRIDO_${route}.xlsx`}
+function triggerDownload(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
+async function generateFinalReport(){if(!state.active||!validateFinal())return;const b=$('#generateReportBtn');b.disabled=true;b.textContent='Generando informe...';try{state.active.coordinator=$('#coordinator').value.trim();state.active.generalObservations=$('#generalObservations').value.trim();state.active.finalizedAt=new Date().toISOString();state.active.finalized=true;persistActive();refreshHome();lastReportBlob=await buildReportBlob();lastReportName=reportFilename();triggerDownload(lastReportBlob,lastReportName);$('#reportReadyCard').classList.remove('hidden');$('#finalActions').style.display='none';$('#finalValidation').textContent='✓ Informe oficial generado correctamente.'}catch(e){console.error(e);state.active.finalized=false;persistActive();alert('No fue posible generar el informe Excel. Vuelve a intentarlo.')}finally{b.textContent='Generar informe Excel';if(!state.active.finalized)validateFinal()}}
+async function ensureReport(){if(!lastReportBlob){lastReportBlob=await buildReportBlob();lastReportName=reportFilename()}return lastReportBlob}
+$('#finalizeBtn').addEventListener('click',openFinalScreen);$('#backFromFinalBtn').addEventListener('click',openActive);$('#coordinator').addEventListener('input',validateFinal);$('#generateReportBtn').addEventListener('click',generateFinalReport);$('#downloadReportBtn').addEventListener('click',async()=>{try{const b=await ensureReport();triggerDownload(b,lastReportName||reportFilename())}catch(e){alert('No fue posible regenerar el informe.')}});$('#shareReportBtn').addEventListener('click',async()=>{try{const b=await ensureReport(),f=new File([b],lastReportName||reportFilename(),{type:b.type});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Informe InterRuta'});else{triggerDownload(b,f.name);alert('El dispositivo no permite compartir archivos directamente. El informe fue descargado.')}}catch(e){if(e?.name!=='AbortError')alert('No fue posible compartir el informe.')}});$('#finalHomeBtn').addEventListener('click',()=>{show('#homeScreen');refreshHome()});
+
 loadActive();show('#homeScreen');
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
