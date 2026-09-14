@@ -1,4 +1,4 @@
-# InterRuta v1.5.2
+# InterRuta v1.6
 
 Mini app PWA para el registro y generación de informes de recorridos preventivos en rutas interurbanas de fibra óptica.
 
@@ -17,3 +17,7 @@ Corrección v1.5.2: genera internamente el archivo raíz _rels/.rels para evitar
 
 ## Corrección v1.5.2
 Se corrige la estructura OOXML interna de la plantilla Excel preservando los namespaces originales de Microsoft Excel. Esto evita que Excel reporte el archivo como dañado o vacío. Mantiene compatibilidad con los recorridos guardados en v1.4/v1.5.
+
+
+## v1.6
+Las fotografías capturadas desde InterRuta incorporan sello permanente con fecha/hora, coordenadas GPS, código de cuadrilla y contexto de evidencia (nodo o novedad ANTES/DESPUÉS).
