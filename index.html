@@ -67,7 +67,7 @@
 <body>
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.6.2</div></div>
+    <div class="brand"><div><div class="telco">TELCONET</div><div class="latam">LATAM</div></div><div class="ver">v1.6.3</div></div>
     <h1>InterRuta</h1><p class="sub">Recorridos Interurbanos · Técnica Sucursal</p>
   </header>
   <main class="content">
@@ -247,7 +247,7 @@
   <div class="bottom" id="finalActions" style="display:none">
     <div class="row"><button class="btn ghost" id="backFromFinalBtn" type="button">← Volver al recorrido</button><button class="btn primary" id="generateReportBtn" type="button" disabled>Generar informe Excel</button></div>
   </div>
-  <div class="footer">InterRuta · Técnica Sucursal · v1.6.2</div>
+  <div class="footer">InterRuta · Técnica Sucursal · v1.6.3</div>
 </div>
 <script>
 const DATA={"crews": [{"code": "IBA PROV IBA INT 01", "members": ["PALACIOS CRIOLLO JOSE LUIS", "CEVALLOS LOPEZ JOSE EDUARDO", "LOPEZ ORBES SANTIAGO MIGUEL"]}, {"code": "IBA PROV IBA INT 02", "members": ["PILCO CASTELLANO BRAYAN RAUL", "OCLES AREVALO FERNANDO ISMAEL"]}, {"code": "IBA PROV CAY INT 01", "members": ["TITO INLAGO SEGUNDO WIDINSON", "HUERTAS DELGADO DARIO JAVIER"]}, {"code": "IBA PROV SGA INT 01", "members": ["ERAZO MONTENEGRO ANGEL VINICIO", "VELASCO PILACUAN CRISTHOFER DAVID", "CEVALLOS GUERRERO DARWIN VLADIMIR"]}], "routes": [{"name": "Ibarra SDH - Cotama SDH", "gis": "IBA-Ibarra SDH (O)/Cotama SDH (A)-F01-BB", "nodes": ["Ibarra SDH", "Atuntaqui", "Cotacachi", "Cotama SDH"]}, {"name": "Cotama SDH - Tabacundo", "gis": "IBA-Cotama SDH (A)/Tabacundo SDH (O) - F01-BB", "nodes": ["Cotama SDH", "Tabacundo"]}, {"name": "Ibarra SDH - Urcuqui", "gis": "IBA-Ibarra SDH (O)/Urcuqui (E)-F02-BB", "nodes": ["Ibarra SDH", "Urcuqui"]}, {"name": "Urcuqui - Lita SDH", "gis": "IBA-Urcuqui (E)/Lita SDH (O)-F01-BB", "nodes": ["Urcuqui", "Lita SDH"]}, {"name": "Cotama SDH -San José de Minas", "gis": "OTA-Cotama SDH (A)/San Jose de Minas (E) - F01-BB", "nodes": ["Cotama SDH", "San José de Minas"]}, {"name": "Apuela – Pacto", "gis": "IBA-Pacto (E)/Apuela (E)-F01-BB (En Construcción)", "nodes": ["Apuela", "Pacto"]}, {"name": "Ibarra SDH - Cayambe SDH", "gis": "IBA-Ibarra SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Ibarra SDH", "Cayambe SDH"]}, {"name": "Cayambe - Pifo", "gis": "CAY-Pifo (E)/Cayambe SDH (O)-F01-BB", "nodes": ["Cayambe", "Pifo"]}, {"name": "Tabacundo - Malchingui", "gis": "MLGI-Malchingui (E)/Data Center uio (A)-Tabacundo SDH (O)-F01-BB", "nodes": ["Tabacundo", "Malchingui"]}, {"name": "Malchingui - Guayllabamba", "gis": "MLGI-Malchingui (E)/San Jose de Minas (E)-Guayllabamba (E)-F01-BB", "nodes": ["Malchingui", "Guayllabamba"]}, {"name": "Tabacundo - Cayambe", "gis": "TAB-Tabacundo SDH (O)/Cayambe SDH (O)-F01-BB", "nodes": ["Tabacundo", "Cayambe"]}, {"name": "Guayllabamba-San Jose de Minas", "gis": "GBB-San Jose de Minas (E)/Guayllabamba (E)-F01-BB", "nodes": ["Guayllabamba", "Perucho", "San Jose de Minas"]}, {"name": "Quinche - Guayllabamba", "gis": "UIO-Quinche (E)/Guayllabamba (E)-F01-BB", "nodes": ["Quinche", "Guayllabamba"]}, {"name": "Cuzubamba - Pifo", "gis": "UIO-Pifo (E)/Cuzubamba-F01-BB", "nodes": ["Cuzubamba", "Pifo"]}, {"name": "Bolivar SDH - Ibarra SDH F02", "gis": "BOL-Bolivar SDH (O)-Ibarra SDH (O)/Tulcan SDH (O)/F2-D01-DB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F02", "gis": "IBA-El Angel (O)/Ibarra SDH (O)-F02-BB", "nodes": ["El Angel SDH", "Ibarra SDH"]}, {"name": "San Gabriel SDH - Ibarra SDH F02", "gis": "IBA-Ibarra SDH (O)/San Gabriel (E)-Tulcan SDH (O)-F01-BB", "nodes": ["San Gabriel SDH", "Ibarra SDH"]}, {"name": "Bolivar SDH - Ibarra SDH F01", "gis": "IBA-Bolivar SDH (O)/Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar SDH", "Ibarra SDH"]}, {"name": "El Angel SDH - Ibarra SDH F01", "gis": "IBA-Ibarra SDH (O)/El Angel (O)-F01-BB", "nodes": ["El Angel SDH", "Mira", "Ibarra SDH"]}, {"name": "Tulcan SDH - Bolivar SDH F01", "gis": "TUL-Tulcan SDH (O)/Bolivar SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Julio Andrade - Santa Barbara", "gis": "JULA-Julio Andrade (E)/Santa Barbara (E)-F01-BB", "nodes": ["Julio Andrade", "Santa Barbara"]}, {"name": "Sta. Barbara - La Bonita", "gis": "LBNT-Santa Barbara (E)/La Bonita (E)-F01-BB", "nodes": ["Sta. Barbara", "La Bonita"]}, {"name": "Tulcan SDH - El Angel SDH F01", "gis": "IBA-El Angel (O)/Tulcan SDH (O)-F01-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - El Angel SDH F02", "gis": "TUL-Tulcan SDH (O)/El Angel (O)-F02-BB", "nodes": ["Tulcan SDH", "El Angel SDH"]}, {"name": "Tulcan SDH - Bolivar SDH  F02", "gis": "IBA-Bolivar SDH (O)/Tulcan SDH (O)-Ibarra SDH (O)-F02-BB", "nodes": ["Tulcan SDH", "Bolivar SDH"]}, {"name": "Tulcan- Rumichaca Principal", "gis": "TUL-Tulcan SDH (O)/N/A-F01-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Tulcan-Rumichaca Backup", "gis": "TUL-Tulcan SDH (O)/N/A-F02-BB", "nodes": ["Tulcan", "Rumichaca"]}, {"name": "Bolivar - Pimapiro", "gis": "IBA-Pimampiro (E)/Tulcan SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Bolivar", "Pimapiro"]}, {"name": "Pimampiro - Ibarra", "gis": "IBA-Pimampiro (E)/Bolivar SDH (O)-Ibarra SDH (O)-F01-BB", "nodes": ["Pimampiro", "Ibarra"]}]};
@@ -353,10 +353,30 @@ function drawEvidenceStamp(ctx,w,h,pos,label){
  ctx.lineWidth=Math.max(2,Math.round(fontSize*.12));ctx.strokeStyle='rgba(0,0,0,.75)';ctx.fillStyle='#fff';
  lines.forEach((line,i)=>{const yy=y-(lines.length-1-i)*lineH;ctx.strokeText(line,x,yy);ctx.fillText(line,x,yy);});
 }
+function deviceCaptureAngle(){
+ let angle=0;
+ if(screen.orientation&&Number.isFinite(screen.orientation.angle)) angle=screen.orientation.angle;
+ else if(typeof window.orientation==='number') angle=window.orientation;
+ angle=((angle%360)+360)%360;
+ return angle;
+}
+function drawNormalizedVideoFrame(video,canvas,maxWidth){
+ const vw=video.videoWidth,vh=video.videoHeight,angle=deviceCaptureAngle();
+ const rotate=angle===90||angle===270;
+ let outW=rotate?vh:vw,outH=rotate?vw:vh;
+ const scale=Math.min(1,maxWidth/outW);outW=Math.round(outW*scale);outH=Math.round(outH*scale);
+ canvas.width=outW;canvas.height=outH;const ctx=canvas.getContext('2d');
+ ctx.save();
+ if(angle===90){ctx.translate(outW,0);ctx.rotate(Math.PI/2);ctx.drawImage(video,0,0,outH,outW);}
+ else if(angle===270){ctx.translate(0,outH);ctx.rotate(-Math.PI/2);ctx.drawImage(video,0,0,outH,outW);}
+ else if(angle===180){ctx.translate(outW,outH);ctx.rotate(Math.PI);ctx.drawImage(video,0,0,outW,outH);}
+ else ctx.drawImage(video,0,0,outW,outH);
+ ctx.restore();
+ return {ctx,w:outW,h:outH};
+}
 async function takeNodePhoto(){
  const video=$('#nodeCamera'); if(!nodeCameraStream||!video.videoWidth||!video.videoHeight)return;
- const maxWidth=1280; let w=video.videoWidth,h=video.videoHeight; if(w>maxWidth){h=Math.round(h*maxWidth/w);w=maxWidth;}
- const canvas=$('#nodeCanvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.drawImage(video,0,0,w,h);
+ const canvas=$('#nodeCanvas');const frame=drawNormalizedVideoFrame(video,canvas,1280);const {ctx,w,h}=frame;
  const pos=await getPosition(); drawEvidenceStamp(ctx,w,h,pos,`NODO · ${$('#nodeSelect').value||''}`);
  nodePhotoData=canvas.toDataURL('image/jpeg',.72); $('#nodePreview').src=nodePhotoData;$('#nodePreview').style.display='block';
  stopNodeCamera(); $('#openCameraBtn').disabled=false;$('#openCameraBtn').textContent='📷 Activar cámara';$('#retakePhotoBtn').classList.remove('hidden');
@@ -419,8 +439,7 @@ async function startNoveltyCamera(kind){
 }
 async function takeNoveltyPhoto(kind){
  const video=$(`#${kind}Camera`),stream=noveltyStreams[kind];if(!stream||!video.videoWidth||!video.videoHeight)return;
- const maxWidth=800;let w=video.videoWidth,h=video.videoHeight;if(w>maxWidth){h=Math.round(h*maxWidth/w);w=maxWidth;}
- const canvas=$(`#${kind}Canvas`);canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.drawImage(video,0,0,w,h);
+ const canvas=$(`#${kind}Canvas`);const frame=drawNormalizedVideoFrame(video,canvas,800);const {ctx,w,h}=frame;
  const pos=await getPosition(); const num=(state.active?.novelties?.length||0)+1; drawEvidenceStamp(ctx,w,h,pos,`NOVEDAD #${String(num).padStart(2,'0')} · ${kind==='before'?'ANTES':'DESPUÉS'}`);
  const data=canvas.toDataURL('image/jpeg',.64);
  if(kind==='before')noveltyBeforePhoto=data;else noveltyAfterPhoto=data;
