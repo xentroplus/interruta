@@ -1,4 +1,4 @@
-# InterRuta v1.6.3
+# InterRuta v1.6.4
 
 Mini app PWA para el registro y generación de informes de recorridos preventivos en rutas interurbanas de fibra óptica.
 
@@ -25,12 +25,16 @@ Las fotografías capturadas desde InterRuta incorporan sello permanente con fech
 ## v1.6.1
 Corrige la vista previa de fotografías para mostrar la imagen completa y permitir validar visualmente las cuatro líneas del sello: fecha/hora, GPS, cuadrilla y contexto de evidencia.
 
-## v1.6.3
+## v1.6.4
 - Fuerza actualización del service worker sin caché para despliegues GitHub Pages.
 - Mantiene sello fotográfico completo y compatibilidad con datos locales existentes.
 
 
-## v1.6.3
+## v1.6.4
 - Normaliza la orientación de fotografías tomadas con el teléfono en horizontal o vertical antes de aplicar el sello.
 - Conserva el sello de fecha/hora, GPS, cuadrilla y tipo de evidencia en orientación legible.
 - No modifica la lógica de recorridos, novedades ni generación del informe Excel.
+
+
+## v1.6.4
+Corrección de orientación de cámara: evita la doble rotación cuando el navegador móvil ya entrega el stream orientado. La rotación de 90° se aplica solo si la relación vertical/horizontal del fotograma no coincide con la orientación visible del dispositivo.
